@@ -1,297 +1,541 @@
-section 10
+section 13 (OOPS)
 
-... coverting ..
+Programmatically object bnane kelia we use classes
 
-numbers are floating point numbers hamesha decimal hi hote 
+abstraction and encapsulation mai jo hiding h diff h ki abstraction mai hide krdete details jo needed nhi and encapsulation mai private krte jisse access na kr pai
 
-23 === 23.0 same baat h
+... const fxn
 
-numbers are represented in 64base2 format means numbers are stored in binary format that means 0 and 1
+it is blueprint of house(actual obj)
 
-base10 0 to 9
-base2 0 to 1
+const Person = function(name, age) { // first letter caps pascal case mai contrsutor fxn bolte inko and ismeh arrow fxn nhi chalenge coz khud ka this keyword chaiye
+	console.log(this); // this abhi empty h coz kuch set nhi apne prototype sath h bs and empty object h and last mai this hi return hota toh isliye this mai set krdi property
+	this.name = name; // new this.name bnaya usmeh name params set krdiya
+	this.age = age;
 
-there are certain numbers difficult to resolve in base to (0.1)
-
-0.1 + 0.2 === 0.3 false aiga
-
-string to number 
-
-console.log(Number('20'));
-
-console.log(+'20'); // type cohesion hoke convert kardega number mai, use this cleaner lgta
-
-number to string is +'' yeh krde
-
-every fxn is also a object
-
-Number is object
-
-console.log(Number.parseInt('20px')); // by default 10 yeh karega ki number nikaldega and it is doing parsing
-
-console.log(Number.parseInt('20px', 10)); // can give base 
-
-console.log(Number.parseInt('20rem', 2));
-
-console.log(parseInt('20em', 2)); // aise bhi call kr skte bina Number obj ke coz it is global fxn but in mordern js Number seh hi call karo
-
-console.log(Number.parseFloat('20.23abc   ')); // more encouraged to use this in modern javascript
-
-console.log(parseFloat('20.23abc   ')); // yeh floating point number nikaldega and spaces string sab ignore hogi
-
-console.log(Number.isNaN('anb')); // checking ki not a number toh nhi and anb string h toh false aiga
-
-console.log(Number.isNaN(20)); // yeh bhi false coz 20 number h
-
-console.log(Number.isNaN(+'abc')); // yeh true aiga coz abc in number NaN h
-
-console.log(Number.isNaN(23 / 0)); // /0 seh NaN aiga
-
-console.log(Number.isFinite(2)); // oppo to isNaN, it checks if it is a number or not
-
-console.log(Number.isInteger(23)); // check for integer
-
-
-... rounding
-
-console.log(Math.sqrt(24)); // sqrt
-
-console.log(25 ** (1 / 2)); // sqrt hi h exponential ki help seh
-
-console.log(25 **(1 / 3)); // cube root ** is expo
-
-console.log(Math.max(3, 4, 5, 6, 1, '23')); // type cohehisoin krte h sab but parse nhi krte 
-
-console.log(Math.max(2, 3, 4, 'abc2')); // NaN aiga parsing nhi h
-
-console.log(Math.min(2, 34, 5));
-
-console.log(Math.PI * Number.parseFloat('10px') ** 2); // pie r*2
-
-console.log(Math.trunc(Math.random() * 6) + 1); // math random [0, 1) deta, trunc decimal htata roundoff nhi krta +1 isliye coz 1-6 chaiye dice roll mai
-
-console.log((Math.trucc(Math.random() * (max - min)) + 1) + min); // yeh min and max ke beech mai dega number
-
-console.log(Math.trunc(2.3)); // remove decimal 2
-
-console.log(Math.round(23.4)); // pass mai round 23
-
-console.log(Math.round(23.6)); // 24
-
-console.log(Math.ceil(23.3)); // celing mtlb upr tarf round off 24
-
-console.log(Math.floor(23.2)); // neeche taraf round off 23
-
-yeh sab type cohesion peh chlte parsing peh nhi 
-
-console.log((2.7).toFixed(0)); // to fixed return string and (2.7) (primitive) ki boxing krdega js mtlb ki (2.7) ko Number object mai transform krdega and usmeh method call krdega 
-
-console.log((2.37).toFixed(2));
-
-
-.. remainder 
-
-console.log(5 % 2); // remainder operator
-
-console.log(5 / 2); // divide
-
-console.log(4 % 2 == 0); // even odd
-
-function isEven(x) { // yeh bkr way likhne ka logic same h but code qual
-  if(x % 2 == 0) console.log('isEven');
+	// you should never create a method inside constructor fxn kyuki agr obj create kiya toh hr ke satb calAge fxn ghumega
+	this.calAge = function() { // bar bar copy banegi hr obj kelia isliye dont do this sirf prototype mai bnado neeche dekho
+		console.log(2022);
+	}
 }
 
-const isEvenSirWay = x => x % 2 == 0 ? 'isEven' : 'isOdd'; // good way
+const obj = new Person('Param', 10); 
 
+obj is instance of Person..
 
-...numeric
+new keyword seh 4 steps hote
 
-const x = 287_349_222; // only for code redability output 287349222 hi aiga bs code redability is 287,349,222
+1) new {} (empty obj) is created jo ki this hi h
+2) fxn is called, this = {}
+3) {} linked to prototype
+4) fxn automatically return {ab empty nhi h} yeh return karega object jo starting mai create hua tha yeh nhi ki abhi create krke bhej do return {} yeh nhi
 
-const PI = 3._14; it is not allowed only placing between digits is allowed 
+console.log(name instanceof Person); // mtlb us fxn construotr ka new keyword seh bna 
 
-const z = Number('349_34'); // it will prinit NaN mtlb ki number jo API seh arha usmeh use mt karo
 
+...prototypes
 
-...big int
+Each and every fxn in js automatically have property called protoype and object created with them gets accessed to all the methods and proties that we define on contructor prototype perperty () brackects nhi coz property bola h
 
-es2020
-
-number are represented in 64 bits only 53 are used to store digits and others to store decimal
-
-console.log(2 ** 53 - 1); // itna hi represent kr skta h normally 53 bits
-
-console.log(Number.MAX_SAFE_INTEGER); // yeh and upr wala same 
-
-console.log(2 ** 53 + 105); // yeh glt aiga sahi seh represent nhi kr paigi isliye BigInt aya
-
-console.log(982403983209849283490293840923849023849); // yeh big int nhi h and precesion kum aigi 
-
-console.log(203948230948203984092384092380480283408n); // big int h n aiga last mai output and input both mai
-
-console.log(BigInt(230948092384092830940234234234)); // outputn n aiga last mai input mai BigInt likhdiya
-
-bigint kelia opertor sab chalenge
-
-console.log(1000n + 1000n);
-
-big int sath kuch mix nhi kr skte
-
-console.log(10 + 1000n); // error cant mix
-
-console.log(10n > 10); // 10n == 10 h type alg h bs bigint h 10 hi
-
-console.log(11n > 10); // true 11 > 10
-
-console.log(10n === 10); // false type check alg
-
-console.log(typeof BigInt); // bigInt
-
-console.log(10n == 10); // true
-
-console.log(Math.sqrt(16n)); // yeh nhi kr skte sirf comparison hi use kr skte
-
-console.log(10n / 3n); // 3n dedega output rather than 3.3333
-
-
-... Creating dates
-
-
-console.log(new Date());
-
-console.log(new Date('Aug 02 2021 18:05:41'));
-
-console.log(new Date('oct 6 2023')); // yeh khud seh diya h js wali string use krlo upr jaise ki better coz reliable h and apni dene mai yeh h ki code break bhi ho skta mtlb pht bhi skta
-
-console.log(new Date(account1.movementsDates[0])); // string deni h
-
-console.log(new Date(2022, 10, 19, 15, 23, 5)); // (year, month (0 based h mtlb 0 january h), date, hours, secs, mili)
-
-console.log(new Date(2022, 10, 31)); // js auto correct krdega as 31 nhi hota 30 krdega
-  
-console.log(new Date(0)); // 1 jan 1970 seh chlta
-
-console.log(new Date(3*24*60*60*1000)); // 1 jan 1970 mai 3*24... mtlb 3 days add krdeta mtlb argument mai usne secs liya
-
-const now = new Date(); // new date ajati timestamp mai (IST is indian standard time)
-
-console.log(now.getYear()); // dont use this use fullyear
-
-console.log(now.getFullYear());// use this for year
-
-console.log(now.getMonth()); // use this for month
-
-console.log(now.getDate());
-
-console.log(now.getDay());
-
-console.log(now.getMonth());
-
-console.log(now.getMinutes());
-
-console.log(now.getSeconds());
-
-console.log(now.toISOString()); // International standards
-
-console.log(now.getTime()); // yeh timestamp dega in milisecond from 1jan 1970
-
-console.log(new Date(1681113054029)); // miliseconds mai add krdo vo total 1970 seh add hojaiga
-
-console.log(Date.now()); // it gives timestamp in milliseconds of now
-
-now.setFullYear(2040); // aise existing date mai change krne kelia
-
-
-...operations 
-
-const future = new Date(2037, 10, 19, 15, 23);
-
-const now = new Date(); // yeh timestamp nhi h yeh abhi ki date h and date.now() timestamp h
-
-console.log(future); // in string return hogi
-
-console.log(now); // string return
-
-console.log(+future); // yeh int mai convert hogi
-
-console.log((+future - +now) / (1000 * 60 * 60 * 24)); // +future - +now seh milisecons milgya and usko convert krdiya days mai / krke
-
-Math.abs(-10); // gives 10
-
-
-... INTL dates
-
-it is an api
-
-it allows to format result according to different languages mtlb usa indian yeh sab naki cpp java
-
-ISO language ke according 
-
-day/month/year h ya month/day/year ya ... kya h language wise
-
-console.log(new Intl.DateTimeFormat('en-IN').format(new Date())); // ismeh apna locale de skte ISO language ka and ismeh time nhi ata sirf date ati
-
-const options = { // time nhi arha tha isliye jo chaiye vo object pass krdiya neeche
-  hour: 'numeric',
-  minute: 'numeric',
-  day: 'numeric',
-  month: 'long',
-  year: 'numeric',
-  // weekday: 'numeric',
-  weekday: 'long',
+Person.prototype.calAge = function() { // Person ki prototype property peh calAge fxn bnadiya
+	console.log(2022);
+	idhr this chalega hr jagah access kr skte
 }
 
-console.log(new Intl.DateTimeFormat('en-IN', options).format(new Date()));
+console.log(Person.prototype); // protoype property h
 
-const locale = navigator.language || navigator.languageCode // browser seh language leke uske according locale de rhe
+param.calAge(); // but obj peh 
 
-console.log(new Intl.DateTimeFormat(locale, options).format(new Date()));
+and this hr jagah accessible h 
+
+prototype of hr object of person same rahega 
+
+console.log(param1.__proto__); // isse prototype ajaiga, and yeh __proto__ property ai h prototype seh hi new keyword ka 3rd point
+
+console.log(param.__proto__ === param1.__proto__); // true aiga, same baat h hr object ka same protoype afr construcotr fxn same toh
+
+console.log(param.__proto__ === Person.prototype); // yeh true aiga but Person.prototype should be prototype of Person but no it is prototype of all obj that are created with contructor fxn 
+
+console.log(Person.prototype.isPrototypeOf(param)); // true
+
+console.log(Person.prototype.isPrototypeOf(Person)); // false person ka thori h 
+
+Person.prototype.hey = 'hey'; // property bhi de skte jaise upr calAge diya vo bhi de skte
+
+console.log(param.hey); // property h no calling
+
+console.log(param.hasOwnProperty('hey')); // mtlb ki protoytpe seh ai h ya khud obj this. krke bnai h, false aiga prototype mai bnai h
+
+console.log(param.hasOwnProperty('name')); // true aiga obj mai bnai h
+
+agr object mai nhi milta toh prototype mai dekhegi and this is called prototype inheritance
+
+Person.protoype is also object and all object in js has prototype and Protoype of Person.prototype is Object.prototype(its is at top and its prototype is null) and this is called Protoytpe chain.
+
+it is similar to scope chain instead of working with scope it works with property
+
+iska benifit h ki hr jagah nhi krna padega define fxn ko obj sath carry nhi hoga prototype mai krdo, code reusability h coz ek hi baar bnana and protoype mai hi hoga
+
+console.log(param.__proto__.__proto__); // yeh constructor fxn ka proto which is obj
+
+console.log(param.__proto__.__proto__.__proto__); // object ka proto null
+
+console.dir(Person.prototype.constructor); // it points back at Person mtlb contructor fxn peh hi
+
+fxn bhi obj h uska bhi proto hota
+
+array bhi obj h uska bhi proto hota
+
+sab objects ka proto apne bnai hui ya phele seh jo bhi ho kyuki concept toh same hi h objects ke
+
+console.log(arr.__proto__); // array bhi object h uska bhi prototype h
+
+console.dir(arr.__proto__); // log seh sab properties chaiye to dir
+
+console.dir(arr.__proto__ === Array.prototype); // true aiga toh 
+
+console.dir(arr.__proto__.__proto__); // Object aiga
+
+console.dir(arr.__proto__.__proto__.__proto__); // null aiga
+
+console.dir(x => x + 1); // fxn is an object h uski properties dekhli dir seh toh agya prototype usmeh jo methods phele use kiye the na bind call yeh sab 
 
 
-...INTL numbers
+...es6 
 
-console.log(new Intl.NumberFormat('en-IN').format(3249234.34)); // number ko format krdega locale ke hisab seh , lgadega yeh sab
+classes are function only thats why we have class expression and class declaration(preffered by sir)
 
-console.log(new Intl.NumberFormat(navigator.language).format(3249234.34)); // navigator.language is ki browser seh language lagana
+class expression
+// const PersonCl = class {
 
-const options = { // yeh docs mai dekhlo
-  style: 'currency', // 'units' 
-  currency: 'INR', // 'celsius', 'miles-per-hour.....
+// }
+
+class PersonCl { // class declaration
+	constructor(name, age) {
+		this.name = name;
+		this.age = age;
+	}
+
+	calcAge() { // yeh prototype mai add hoga object peh nhi of PersonCl ka
+		console.log(this.age);
+	}
 }
 
-console.log(new Intl.NumberFormat(navigator.language, options).format(3249234.34)); // options object pass kr skte
+const paramjot = new PersonCl('param', 20);
+console.log(paramjot);
+paramjot.calcAge();
+
+classes are not hoisted we cant use before declaring error aiga
+
+classes are also first class citizen which means we can pass them into fxn and we can return it from fxn coz classes are special type of fxn behind the scene
+
+clasess are executed in strict mode by default
 
 
-... settimeout
+...getters 
 
-settimeout runs once after define time
+These are called accessors property and normal properties are called data properties
 
-and setinterval keeps running until we stop it
 
-js hits settimout toh vo keep counting time in background and register this callback fxn in settimout to be called after the time has elapsed and immediately it will move to next line and this mechanism is called async js
+object peh getter and setter property not method
 
-const arr = [2, 3];
+const account = {
+	owner : 'param',
 
-const timer = setTimeout((x, y) => console.log(x), 3000, ...arr); // callback mai pass krne kelia arguments time ke baad do and time ms mai h and arr[0] arr[1] bhi kr skte but noob way spread krdo
+	get age() { // it si property not method
+		console.log('object');
+	},
 
-agr setTimout bina seconds toh 0 mana jaiga default
+	set name(name) {
+		this.owner = name;
+	}
+};
 
-setTimeout(() => console.log(2)); // by default 0 sec but phir bhi last wala hey ke baad chalega iska reason baad mai dekho
+account.age; // not age();
 
-if(arr.includes('2')) clearTimeout(timer); // clear bhi kr skte mtlb chlne seh rokh skte
+// account.set('paramjot'); // not this
 
-console.log('hey'); // sabseh phele hey print hoga then setTimout chlega
+account.set = 'paramjot';
 
-setInterval(() => { // hrr 1000ms == 1s baad chalega pheli baari bhi 1000ms ke baad hi chalega immediate chalana toh uske lia alg fxn bnalo callback ka usko phele bahar call krdo then setInterval mai call
-  console.log(new Date()); 
-}, 1000);
+classes peh 
 
-fxn(); // immedaite calling
-setInterval(fxn, 1000); // 1000 milisec baad calling
+get and set zaroori nhi sath use kar
 
-clearInterval(timer); // to stop kyuki vo hrr time baad chl rha isliye stop krdo usse
+class PersonCl { // class declaration
+	constructor(name, age) {
+		this.name = name;
+		this.age = age;
+	}
 
-we can do this
-const timer = setInterval(() => {clearInterval(timer)}, 1000); kehne ka mtlb clearInterval tu setInterval ke ander bhi call kr skta
+	calcAge() { // yeh prototype mai add hoga object peh nhi of PersonCl ka
+		console.log(this.age);
+	}
+
+	get ageOfPerson() {
+		return this.age;
+	}
+
+	get age() {
+		return this._age; // error htane kelia maximum size wala use _ convention
+	}
+
+	set ageOfPerson(value) {
+		this.age = value;
+	}
+
+	set age(value) {
+		this._age = value; // this.age hota toh dono(constructor and set dono same property change kr rhe toh error ajata) isliye this._age krlo underscore dallo convention
+	}
+};
+
+
+console.log(paramjot.ageOfPerson);
+
+paramjot.ageOfPerson = 'param';
+
+agr get ka name same and contstructor jo property set kr rha usse toh dono ek hi property set kar rhe isse maximum call stack execced ka error ajaiga
+
+jo property already exist h usko set krne kelia vapis seh use _ nhi toh maximum call stack execced error aiga
+
+
+...static
+
+Array.from, from is attached to Array constructor not to prototype so [1,2].from will not work but Array.from will work
+
+Person.hey = function() { // static method bn gya contrusctor fxn peh add kiya h
+	console.log('object');
+	console.log(this); // this will point to contructor fxn coz that is exactly the obj calling the fxn, whenver obj is calling the method will be the this keyword inside that fxn
+}
+
+Person.hey(); // yeh chalega and yeh inherit nhi ho rha to prototype
+param.hey(); // param is uska instance and Person ke prototype wale inherit hote but hey prototype mai aya hi nhi isliye param.hey() nhi chalega
+Person.prototype.hey() is different coz vo prototype mai hui h add
+
+class PersonCl { // class declaration
+	constructor(name, age) {
+		this.name = name;
+		this.age = age;
+	}
+
+	// it is called instance method kyuki it will get added and all instance will have access to it
+	calcAge() { // yeh prototype mai add hoga object peh nhi of PersonCl ka 
+		console.log(this.age);
+	}
+
+
+	// yeh static method 
+	static hey() {
+		console.log(this);
+	}
+};
+
+
+...object create
+
+least used, 3rd way h 1st was const fxn 2nd was clasees 3rd yeh h
+
+Object.create creates new object and prototype of object is what obj we pass as arguement
+
+ismeh hum set krte prototype property manually to any obj that we want
+
+const PersonProto = { // yeh bhi obj hi toh h syntax dekh dyan seh
+	calcAge() {
+		console.log(2022);
+	}
+
+	init(name, age) { // idhr krle
+		this.name = name;
+		this.age = age;
+	}
+};
+
+here on paramjotsingh obj we set protoype property to PersonProto object
+const paramjotsingh = Object.create(PersonProto); // obj create hogya PersonProto sath ismeh humne manually add kiya protoype
+console.log(paramjotsingh); // obj
+
+//bad way to manipulate or create obj koi programmatic way hona chaiye, good way is upr init krle
+paramjotsingh.name = 'param';
+paramjotsingh.age = 20;
+
+paramjotsingh.calcAge(); // usspeh prototype property access krte hui
+
+
+... inheritance with con fxn
+
+Real classes do not exist in js but we say classes for ease
+
+const Person = function(name, age) {
+	// console.log(this);
+	this.name = name;
+	this.age = age;
+}
+
+Person.prototype.calcAge = function() {
+	console.log(this, 2022);
+}
+
+const Student = function(name, age, course) {
+	// console.log(this);
+	// this.name = name;
+	// this.age = age;
+	// Person(name, age); // it will not work coz Person toh contructor bna rha but this nhi ho rha new nhi h isliye
+	Person.call(this, name, age); // isliye use .call jisse this chale
+	this.course = course;
+}
+
+Student.prototype = Object.create(Person.prototype); // Object.create return empty object which gets store in Student.prototype or yeh phele hi hona chiaye sabseh coz nhi toh yeh override krdega sabko jaise jo next method h
+
+// Student.prototype = Person.prototype; // wrong way we dont want ki dono object same ho we want ki Person prototype object should be prototype of student.prototype, we want to inherit from it rather than specifing same object isko solve karega Object.create
+
+Student.prototype.intro = function() {
+	console.log(this.name);
+}
+
+const param = new Student('param', 23, 'CSE');
+console.log(param);
+param.intro();
+console.log(param.__proto__);
+console.log(param.__proto__.__proto__);
+
+Student.prototype.constructor = Student;
+console.dir(Student.prototype.constructor);
+
+
+... inheritance with classes
+
+classes mai jo bhi con fxn seh kiya ab automatically ho jata
+
+class PersonCl { 
+	constructor(name, age) {
+		this.name = name;
+		this.age = age;
+	}
+
+	calcAge() { 
+		console.log(this.age);
+	}	
+
+	get age() {
+		return this._age;
+	}
+
+	set age(value) {
+		this._age = value;
+	}
+
+	static hey() {
+		console.log(this);
+	}
+};
+
+class StudentCl extends PersonCl {
+	constructor(name, age, course) {
+		// super always needs to happen first! coz jisse this keyword ki access miljai
+		super(name, age);
+		this.course = course;
+	}
+
+	intro() {
+		console.log(this.name);
+	}
+
+	calcAge() { // isne override krdiya parent class ke calcAge ko ya bolo shadow krliya
+		console.log(this.age, 2022);
+	}
+}
+
+const param = new StudentCl('param', 20, 'CSE');
+const param1 = new StudentCl('param', 20); // parent ka chl jaiga agr child mai constructor nhi hua toh and agr constructor h and sate arguments nhi pass karo toh child ka hi chalega but undefined hoga
+
+console.log(param);
+
+console.log(param1);
+
+param1.intro();
+
+param1.calcAge() // child wala chalega
+
+
+
+... ineheritance obj create
+
+ismeh constructor and prototype property seh kuch lena dena nhi bs object inherit another object 
+
+const PersonProto = {
+	calcAge() {
+		console.log(2022);
+	},
+
+	init(name, age) { 
+		this.name = name;
+		this.age = age;
+	}
+};
+
+const paramjotsingh = Object.create(PersonProto); 
+const StudentProto = Object.create(PersonProto); // this create PersonProto as prototype of StudentProto
+StudentProto.init = function (name, age, course) {
+	PersonProto.init.call(this, name, age); // fxn peh init kr rha
+	this.course = course;
+}
+const param = Object.create(StudentProto);
+console.log(param); 
+
+
+...classes
+
+Yehi use hoti real world mai jyada
+
+class Account {
+	constructor(owner, currency, pin) {
+		this.owner = owner;
+		this.currency = currency;
+		this._pin = pin;
+		this._movements = []; // empty array h toh params na bnao
+		this.locale = navigator.language; // yeh toh fixed hi never chaning toh direct yehi likhdo param na bnao
+
+		console.log('Hey '); // yeh chl jaiga khud constructor chalega tab
+	}
+
+	// these methods are public interface of our objects and are called APIs
+	deposit(val) {
+		this._movements.push(val);
+	}
+
+	withdraw(val) {
+		this.deposit(-val); // dusre methods ko call kr skta h
+	}
+}
+
+const acc1 = new Account('param', 'EUR', 1111);
+console.log(acc1);
+
+// acc1._movements.push(250); // aise direct property sath interact mt karo methods bnao and aise krne seh rokhne kelia we use encapsulation
+
+acc1.deposit(250);
+acc1.withdraw(140);
+
+console.log(acc1);
+
+
+...encap
+
+private kardo jisse bahar seh modify nhi kr sake and APIs hi accesseble ho sirf
+
+js classes do not support data privacy and encapsulation so we fake it _ lagake it is not truely private and so we call them protected
+
+class Account {
+	constructor(owner, currency, pin) {
+		this.owner = owner;
+		this.currency = currency;
+		this._pin = pin;
+		//protected property access toh kr skte bahar seh but apni team mai we know we should not access it outside coz movement nhi _movement h
+		this._movements = []; // empty array h toh params na bnao
+		this.locale = navigator.language; // yeh toh fixed hi never chaning toh direct yehi likhdo param na bnao
+
+		console.log('Hey '); // yeh chl jaiga khud
+	}
+
+	// these methods are public interface of our objects and are called APIs
+	deposit(val) {
+		this._movements.push(val);
+	}
+
+	withdraw(val) {
+		this.deposit(-val); // dusre methods ko call kr skta h
+	}
+}
+
+const acc1 = new Account('param', 'EUR', 1111);
+console.log(acc1);
+
+// acc1._movements.push(250); // aise direct property sath interact mt karo methods bnao
+
+acc1.deposit(250);
+acc1.withdraw(140);
+
+console.log(acc1);
+
+
+... truely private
+
+Not supported abhi kuch kuch supported h kuch kuch nhi h
+
+1) Public fields = property
+2) Private fields
+3) Public methods
+4) Private methods
+5 6 7 8) static version of all 1 2 3 4)
+
+
+let x;
+clg(x) is undefined revise krva rha
+
+class Account {
+	// public fields (they are on instances)
+	locacle = navigator.language;
+
+	//private fields
+	#movements = []; 
+
+	constructor(owner, currency, pin) {
+		this.owner = owner;
+		this.currency = currency;
+		this._pin = pin;
+		//protected property access toh kr skte bahar seh but apni team mai we know we should not access it outside coz movement nhi _movement h
+		// this._movements = []; // empty array h toh params na bnao
+		// this.locale = navigator.language; // yeh toh fixed hi never chaning toh direct yehi likhdo param na bnao
+
+		console.log('Hey '); // yeh chl jaiga khud
+	}
+
+	// these methods are public interface of our objects and are called APIs
+	deposit(val) {
+		this.#movements.push(val);
+	}
+
+	//they are on prototype and are public methods
+	withdraw(val) {
+		this.deposit(-val); // dusre methods ko call kr skta h
+	}
+
+	//protected methods fake private
+	_deposit(val) {
+		this.#movements.push(val);
+	}
+
+	//private methods
+	#requestLoan(val) {
+		clg('hey');
+	}
+}
+
+const acc1 = new Account('param', 'EUR', 1111);
+console.log(acc1);
+
+// acc1._movements.push(250); // aise direct property sath interact mt karo methods bnao
+
+acc1.deposit(250);
+acc1.withdraw(140);
+
+console.log(acc1);
+
+// console.log(acc1.#movements); // error ajaiga cant access coz private h
+
+it is class field proposal abhi bhi chl rha isliye kabhi kabhi supported kabhi kabhi ni
+
+
+...chainable methods in class
+
+array mai jaise chaining hoti thi vo krni h toh 
+
+	deposit(val) {
+		this.#movements.push(val);
+		return this; // yeh kardo
+	}
+
+acc1.deposit(200).deposit(250).withdraw(100); // chaining
+
+jisse deposit ab this return kare mtlb vohi object and uspeh vapis deposit call krdiya smjhe
 
 
