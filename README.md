@@ -1,541 +1,352 @@
-section 13 (OOPS)
+Section skipped Adv dom only topic name jaan liye and mapty project skip bkr tha resume mai nhi dalna toh kya use 
 
-Programmatically object bnane kelia we use classes
 
-abstraction and encapsulation mai jo hiding h diff h ki abstraction mai hide krdete details jo needed nhi and encapsulation mai private krte jisse access na kr pai
+section 15 (Async)
 
-... const fxn
+...asyc js
 
-it is blueprint of house(actual obj)
+most of code jo ab tk likha sync tha
 
-const Person = function(name, age) { // first letter caps pascal case mai contrsutor fxn bolte inko and ismeh arrow fxn nhi chalenge coz khud ka this keyword chaiye
-	console.log(this); // this abhi empty h coz kuch set nhi apne prototype sath h bs and empty object h and last mai this hi return hota toh isliye this mai set krdi property
-	this.name = name; // new this.name bnaya usmeh name params set krdiya
-	this.age = age;
+AJAX is not used as XML data format is old now JSON is used which is basically js object converted to strings
 
-	// you should never create a method inside constructor fxn kyuki agr obj create kiya toh hr ke satb calAge fxn ghumega
-	this.calAge = function() { // bar bar copy banegi hr obj kelia isliye dont do this sirf prototype mai bnado neeche dekho
-		console.log(2022);
-	}
+github peh bht saari public apis h
+
+CORS, API endpoint 
+
+//OLD WAY
+const request = new XMLHttpRequest();
+request.open('GET', 'https://restcountries.eu/rest/v2/name/portugal');
+request.send();
+console.log(request.responseText); // it will happen in background abhi kuch nhi show hoga coz abhi toh get kr hi rha h backend seh
+
+...Callback Url
+
+callback( callback( callback( .... ke ander ke ander toh callback hell hojati
+
+setTimeout(() => {
+	console.log(1);
+	setTimeout(() => {
+		console.log(2);
+		setTimeout(() => {
+			console.log(3); // > triangular shape bn jati callback hell h yeh
+		}, 1000)
+	}, 1000);
+}, 1000)
+
+code which is hard to understand is basically bad code will have more bugs
+
+
+...Promises
+
+ES6 feature
+
+Promise are only settled once from then the state will remain unchange foreever promise ki state jo agai rejected ya success (settled mai) vo change nhi hoti ek baar agai toh agai.
+
+... consume
+
+promise seh object ata h promise ka ki success ya rejected usko .then() seh krlo ki settled hojai toh .then karo 
+
+json method is available for all response objects that is coming from the fetch fxn
+
+json bhi async fxn h which means it will return promise 
+
+Async fxn return promises
+
+.then seh handle promise
+
+const getCountryData = function (country) {
+	fetch(`https://restcountries.com/v3.1/name/${country}`).then(function(response) {
+		console.log(response); // object hi print hua
+		// console.log(response.json()); // do baar response.json nhi kr skte, 2 time consuming not allowed
+		return response.json(); // for reading data from response call json method on that response object
+	}).then(function(data) { // ab upr promise return kiya toh sab promise hogya ab vapis .then krlo
+		console.log(...data);
+	});
 }
 
-const obj = new Person('Param', 10); 
+getCountryData('india');
 
-obj is instance of Person..
-
-new keyword seh 4 steps hote
-
-1) new {} (empty obj) is created jo ki this hi h
-2) fxn is called, this = {}
-3) {} linked to prototype
-4) fxn automatically return {ab empty nhi h} yeh return karega object jo starting mai create hua tha yeh nhi ki abhi create krke bhej do return {} yeh nhi
-
-console.log(name instanceof Person); // mtlb us fxn construotr ka new keyword seh bna 
+Promises do not get rid of callbacks but they get rid of callback hell
 
 
-...prototypes
+...chain promises
 
-Each and every fxn in js automatically have property called protoype and object created with them gets accessed to all the methods and proties that we define on contructor prototype perperty () brackects nhi coz property bola h
+.then method always return a promise if we return anything or not and agr hum kuch return kare toh vo full filled value hogi promise ki
 
-Person.prototype.calAge = function() { // Person ki prototype property peh calAge fxn bnadiya
-	console.log(2022);
-	idhr this chalega hr jagah access kr skte
+.then promise return karega uske ander mt chain bna lena .then ke baad .then hoga naki .then ke ander .then .then dyaan dena
+
+.then(response => response.josn().then(response ... yeh mt krna wrong tareeka IT WILL WORK but yeh phir callback hell bnadega
+
+.then(response => response.json() idhr khtm hoga and next then peh loge uss promise ko).then( ... right way
+
+
+... handling rejected
+
+Jis promise mai error ai vo rejected promise h(settled mai)
+
+const getCountryData = function (country) {
+	// hr jagah err ka vo de skte but ek baar last mai catch krlo vo jyada better
+	fetch(`https://restcountries.com/v3.1/name/${country}`).then(response => response.json, err => alert(err)).then(function(data) { 
+		console.log(...data);
+	});
 }
 
-console.log(Person.prototype); // protoype property h
-
-param.calAge(); // but obj peh 
-
-and this hr jagah accessible h 
-
-prototype of hr object of person same rahega 
-
-console.log(param1.__proto__); // isse prototype ajaiga, and yeh __proto__ property ai h prototype seh hi new keyword ka 3rd point
-
-console.log(param.__proto__ === param1.__proto__); // true aiga, same baat h hr object ka same protoype afr construcotr fxn same toh
-
-console.log(param.__proto__ === Person.prototype); // yeh true aiga but Person.prototype should be prototype of Person but no it is prototype of all obj that are created with contructor fxn 
-
-console.log(Person.prototype.isPrototypeOf(param)); // true
-
-console.log(Person.prototype.isPrototypeOf(Person)); // false person ka thori h 
-
-Person.prototype.hey = 'hey'; // property bhi de skte jaise upr calAge diya vo bhi de skte
-
-console.log(param.hey); // property h no calling
-
-console.log(param.hasOwnProperty('hey')); // mtlb ki protoytpe seh ai h ya khud obj this. krke bnai h, false aiga prototype mai bnai h
-
-console.log(param.hasOwnProperty('name')); // true aiga obj mai bnai h
-
-agr object mai nhi milta toh prototype mai dekhegi and this is called prototype inheritance
-
-Person.protoype is also object and all object in js has prototype and Protoype of Person.prototype is Object.prototype(its is at top and its prototype is null) and this is called Protoytpe chain.
-
-it is similar to scope chain instead of working with scope it works with property
-
-iska benifit h ki hr jagah nhi krna padega define fxn ko obj sath carry nhi hoga prototype mai krdo, code reusability h coz ek hi baar bnana and protoype mai hi hoga
-
-console.log(param.__proto__.__proto__); // yeh constructor fxn ka proto which is obj
-
-console.log(param.__proto__.__proto__.__proto__); // object ka proto null
-
-console.dir(Person.prototype.constructor); // it points back at Person mtlb contructor fxn peh hi
-
-fxn bhi obj h uska bhi proto hota
-
-array bhi obj h uska bhi proto hota
-
-sab objects ka proto apne bnai hui ya phele seh jo bhi ho kyuki concept toh same hi h objects ke
-
-console.log(arr.__proto__); // array bhi object h uska bhi prototype h
-
-console.dir(arr.__proto__); // log seh sab properties chaiye to dir
-
-console.dir(arr.__proto__ === Array.prototype); // true aiga toh 
-
-console.dir(arr.__proto__.__proto__); // Object aiga
-
-console.dir(arr.__proto__.__proto__.__proto__); // null aiga
-
-console.dir(x => x + 1); // fxn is an object h uski properties dekhli dir seh toh agya prototype usmeh jo methods phele use kiye the na bind call yeh sab 
-
-
-...es6 
-
-classes are function only thats why we have class expression and class declaration(preffered by sir)
-
-class expression
-// const PersonCl = class {
-
-// }
-
-class PersonCl { // class declaration
-	constructor(name, age) {
-		this.name = name;
-		this.age = age;
-	}
-
-	calcAge() { // yeh prototype mai add hoga object peh nhi of PersonCl ka
-		console.log(this.age);
-	}
+const getCountryData1 = (country) => {
+	fetch(`https://restcountries.com/v3.1/name/${country}`).then((response) => {
+		return response.json();
+	}).then((data) => { 
+		console.log(...data);
+	}).catch(function(err) {
+		console.error(err); // err propogate downward neeche jate rahenge
+	}).finally(() => { // it is always happen chaiye .then ho ya .catch error ho ya success koi frk nhi pdhta yeh chalega
+		console.log('always called');
+	});
 }
 
-const paramjot = new PersonCl('param', 20);
-console.log(paramjot);
-paramjot.calcAge();
+.catch bhi promise return krta tabhi .finally chala coz vo promise peh hi chlta
 
-classes are not hoisted we cant use before declaring error aiga
+response mai (ok=t/f dekhlo ya status dekhlo 404 yeh sab)
 
-classes are also first class citizen which means we can pass them into fxn and we can return it from fxn coz classes are special type of fxn behind the scene
+dekh jaise 404 error aya but fetch fxn ne promise reject nhi kiya usko phir tujhe khud krna padega reject by throwing Error
 
-clasess are executed in strict mode by default
+404 .catch mai nhi ja rha iske lia check ok property neeche dekho and error throw krdo
+
+const getCountryData = (country) => {
+	fetch(`https://restcountries.com/v3.1/name/${country}`)
+	.then((response) => {
+		console.log(response);
+		if(!response.ok) {
+			throw new Error(`Country not found (${response.status})`); // aise error throw hogya toh ek dum neeche chala jaiga sab .then skip krke
+		}
+		return response.json();
+	}).then((data) => { 
+		if(!response.ok) { // ab yeh hr jagah ho rha repetitve code iske lia helper fxn bnalo
+			throw new Error(`Country not found (${response.status})`); // aise error throw hogya toh ek dum neeche chala jaiga sab .then skip krke
+		}
+		console.log(...data);
+	}).catch((err) => {
+		console.error(err);
+	}).finally(() => {
+		console.log('always called');
+	});
+}
+
+error beech mai ajai toh create krlo error throw new Error krke vo catch mai catch hojaiga
 
 
-...getters 
+...behind the scene
 
-These are called accessors property and normal properties are called data properties
+Each time event loop take callback from callback queue we say there is event loop tick
+
+Web apis seh timer ke baad callback queue mai ate execute hone but udhr bhi waiting h toh zaroori nhi ki jo time set kiya tha uske baad hi run hoga usse jyada bhi wait krna pd skta h
+
+It is gurantee ki 5 sec seh phele nhi hoga but 5 sec baad callback queue mai ajaiga uske baad jitni waiting vo wait karo
+
+Stack empty hoga tabhi Event loop lega callback queue seh
+
+Event loop does the orchastration of this entire js runtime
+
+Js does not have sense of time coz everything which is aysnc does not happen in engine Runtime manages all the async behaviour and its the event loop which decides what will be executed next
+
+Callback related to promises doesnot go in callback queue but jaise settimeout seh h toh callback queue mai jaigi, promises related callback goes in microtasks queue
+
+microtask queue has priority over callback queue and check event loop hi krta phele sab microtask queue sesh chalega
 
 
-object peh getter and setter property not method
+... event loop 
 
-const account = {
-	owner : 'param',
+Top level code (code outside any callback) will run first then microtask queue ke sare call stack khtm hone baad then callback queue ke saare
 
-	get age() { // it si property not method
-		console.log('object');
-	},
+console.log('1'); // callstack wala
+setTimeout(() => console.log(2), 0); // 0 sec mai hogya yeh baad mai hoga coz yeh callback queue ka h
+Promise.resolve('Resolved promise 3').then(res => console.log(res)); // immediate promise resolve 0 sec mai but yeh microtask wala yeh phele hoga execute
+Promise.resolve('Resolved promise 4').then((res) => { for(let i = 0; i < 10; i++){} }); //  phele for loop pura chalega phir 0 sec wala set timeout jo ki h 0 sec but chalega baad mai
+console.log('4'); // callstack wala
 
-	set name(name) {
-		this.owner = name;
-	}
+.then and .catch and .finally mai kuch bhi likhdo code 
+
+... create promise
+
+Promises are special kind of object in js
+
+// Promise contructor
+const promise = new Promise((resolve, reject) => { // executor fxn it will contain asynchronous behavior
+	console.log('hey');
+	setTimeout(() => { // async ki feel coz promise async hi kaam h
+		if(Math.random() >= 0.5) {
+			resolve('param'); // response mai print hoga
+		} else {
+			reject(new Error('reject')); // error mai print hoga Error object 
+		}
+	}, 1000);
+})
+
+promise chl jaiga and uske ander ka code chalega
+
+promise.then(res => console.log(res)).catch(err => console.error(err));
+
+Promisifying is converting async call back fxn into promise based
+
+const wait = function(seconds)  {
+	return new Promise((resolve, reject) => {
+		setTimeout(resolve, seconds*1000); // callback fxn pass krdiya *1000 in ms wala and promise return krna is promisisfying
+	})
+}
+
+wait(3) // wait for 3sec
+.then(res => wait(2)) // wait for 2 seconds from last and overall 5sec
+.then(res => console.log('hey'))
+.catch(err => console.error(err)); // promise ne jitna wait krvana krvaiga tab jaige resolve hoga
+
+Promise.resolve('abc').then(res => console.log(res)); // static method in Promise constructor, this means promise resolve immediately
+Promise.reject('abc').then(res => console.log(res)); // static method in Promise constructor, this means promise reject immediately
+
+
+...asycn await
+
+// this fxn is runnign asynchoronously in background and it will not block the call stack
+const whereAmI = async function(country) { // it is aysnc fxn and it will run in bg and return promise
+	fetch('https://restcountries.com/v3.1/name/portugal').then(res => console.log('second'));
+	const promise = await fetch('https://restcountries.com/v3.1/name/portugal'); // await is used to wait for result of the promise, bascially await will stop the code execution at this point of the fxn until the promised is full filled or settled(resolve, or reject)
+	console.log(promise);
+	console.log('second'); 
+}
+
+whereAmI('portugal');
+console.log('first');
+
+confuse mt hoiyo await stop karega but mircotask queue mai karega jab event loop seh aiga tab phele promise hoga then second print but first toh sabseh phele call stack mai hoga usko sabseh phele khali krna toh sabseh phele print hoga first then promise wala chalega
+
+async await is syntactic sugar of promise .then.catch
+
+
+const whereAmI = async function(country) { 
+	// fetch('https://restcountries.com/v3.1/name/portugal').then(res => console.log('second'));
+	const res = await fetch('https://restcountries.com/v3.1/name/portugal');
+	const data = await res.json(); // yeh bhi promise de rha await krlo, promise peh hi hoga await setitmout in sab peh mt krne lag jana
+	console.log(data); 
+	console.log('second');
+}
+
+... try catch
+
+try catch toh js mai phele seh h usko asyc await sath use kr skte 
+
+const whereAmI = async function (country) {
+  try {
+    const res = await fetch(`https://restcountries.com/v3.1/name/${country}`); // automatic reject nhi hua toh catch mai nhi ja rha isliye glt peh isliye !res.ok check krna pada
+    if(!res.ok) {
+	      throw new Error(`Country not found (${res.status})`); // isse reject ho jaiga and catch mai chala jaiga
+    }
+    const data = await res.json();
+    console.log(data);
+    console.log('second');
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-account.age; // not age();
 
-// account.set('paramjot'); // not this
+... returning values
 
-account.set = 'paramjot';
+const whereAmI = async function (country) {
+  try {
+   
+    const res = await fetch(`https://restcountries.com/v3.1/name/${country}`); 
+	      throw new Error(`Country not found (${res.status})`);
+    }
+    const data = await res.json();
+    return data; // promise aiga
+  } catch (e) {
+    console.log(e);
+    throw e;
+  }
+};
+console.log(1);
+// const city = whereAmI('portugal'); // yeh return data nhi de rha yeh promise de rah jisse sync js toh next line mai promise print krdegi jabki async toh alag chl rha dont get confused, and jo promise aya vo pending state mai h full fill nhi hua 
+// console.log(city);
 
-classes peh 
+//promise aya tabhi .then hua
+whereAmI('portugal').then((data) => {console.log(data);}).catch((err) => {console.log(err);}).finally(() => {console.log('done');}); // ab yeh toh old logic h toh isko bhi aysnc await mai karo
+console.log(2);
 
-get and set zaroori nhi sath use kar
-
-class PersonCl { // class declaration
-	constructor(name, age) {
-		this.name = name;
-		this.age = age;
+// yeh use krlo 
+(async () => {
+	try {
+		const data = await whereAmI('portugal'); // whereAmI promise hi h and jaruri nhi whereAmI seh promise ai 
+		console.log(data);
 	}
-
-	calcAge() { // yeh prototype mai add hoga object peh nhi of PersonCl ka
-		console.log(this.age);
+	catch(err) {
+		console.log(err);
 	}
+	console.log('done');
+})();
 
-	get ageOfPerson() {
-		return this.age;
-	}
 
-	get age() {
-		return this._age; // error htane kelia maximum size wala use _ convention
-	}
+We can use await without asyc
 
-	set ageOfPerson(value) {
-		this.age = value;
-	}
+...running in parallel
 
-	set age(value) {
-		this._age = value; // this.age hota toh dono(constructor and set dono same property change kr rhe toh error ajata) isliye this._age krlo underscore dallo convention
+Promise. peh static fxn use ho rhe h
+
+const get3Countries = async function(c1, c2, c3) {
+	try {
+		promise1; // aise krne seh acha ek ek ek wait kare promise.all krlo
+		promise2;
+		promise3; 
+		// yeh upr ek ek krke wait krke promise2 then wait phir promsie 3, it is slow process
+
+		const data = await Promise.all([promise1, promise2, promise3]); // agr ek sath run krne toh aise karo, it receives an array and return an array and it returns promise
+		console.log(data);
+	} catch(err) {
+		console.log(err);
 	}
+}
+
+Pormise.all mai seh ek bhi reject hua toh sab reject
+
+it shortcircuits ek hojai tab
+
+... promise combinator
+
+1) Promise.race receives array of promises and it get settled when one first set get setteled and return promise only 
+   race hogi sab promises jo phele hoya vo hojaiga bs
+
+(async () => {
+	try {
+		const data = await Promise.race([whereAmI('portugal'), whereAmI('india'), whereAmI('usa')]);
+		console.log(data);
+	} catch(err) {
+		console.log(err);
+	}
+})();
+
+const timeout = (sec) => {
+	return new Promise((resolve, reject) => {
+		setTimeout(reject, sec);
+	});
 };
 
+Promise.race([whereAmI('portugal'), timeout(0.01)]).then(() => {}).catch((err) => {});
 
-console.log(paramjot.ageOfPerson);
+2) Promise.allSettled 
 
-paramjot.ageOfPerson = 'param';
+takes [promises] and return all settled promises arr
 
-agr get ka name same and contstructor jo property set kr rha usse toh dono ek hi property set kar rhe isse maximum call stack execced ka error ajaiga
+es2020
 
-jo property already exist h usko set krne kelia vapis seh use _ nhi toh maximum call stack execced error aiga
+it does not shortcircuit it will run for all promises and return result for all the promises
 
+Promise.allSettled([whereAmI('portugal'), timeout(0.01)]).then(() => {}).catch((err) => {});
 
-...static
+const data = Promi.. thori kr skta promise h await karo nhi toh .then karo 
 
-Array.from, from is attached to Array constructor not to prototype so [1,2].from will not work but Array.from will work
+3) Promise.any
 
-Person.hey = function() { // static method bn gya contrusctor fxn peh add kiya h
-	console.log('object');
-	console.log(this); // this will point to contructor fxn coz that is exactly the obj calling the fxn, whenver obj is calling the method will be the this keyword inside that fxn
-}
+es2021
 
-Person.hey(); // yeh chalega and yeh inherit nhi ho rha to prototype
-param.hey(); // param is uska instance and Person ke prototype wale inherit hote but hey prototype mai aya hi nhi isliye param.hey() nhi chalega
-Person.prototype.hey() is different coz vo prototype mai hui h add
+it will only give resolved promises not reject promises
 
-class PersonCl { // class declaration
-	constructor(name, age) {
-		this.name = name;
-		this.age = age;
-	}
 
-	// it is called instance method kyuki it will get added and all instance will have access to it
-	calcAge() { // yeh prototype mai add hoga object peh nhi of PersonCl ka 
-		console.log(this.age);
-	}
-
-
-	// yeh static method 
-	static hey() {
-		console.log(this);
-	}
-};
-
-
-...object create
-
-least used, 3rd way h 1st was const fxn 2nd was clasees 3rd yeh h
-
-Object.create creates new object and prototype of object is what obj we pass as arguement
-
-ismeh hum set krte prototype property manually to any obj that we want
-
-const PersonProto = { // yeh bhi obj hi toh h syntax dekh dyan seh
-	calcAge() {
-		console.log(2022);
-	}
-
-	init(name, age) { // idhr krle
-		this.name = name;
-		this.age = age;
-	}
-};
-
-here on paramjotsingh obj we set protoype property to PersonProto object
-const paramjotsingh = Object.create(PersonProto); // obj create hogya PersonProto sath ismeh humne manually add kiya protoype
-console.log(paramjotsingh); // obj
-
-//bad way to manipulate or create obj koi programmatic way hona chaiye, good way is upr init krle
-paramjotsingh.name = 'param';
-paramjotsingh.age = 20;
-
-paramjotsingh.calcAge(); // usspeh prototype property access krte hui
-
-
-... inheritance with con fxn
-
-Real classes do not exist in js but we say classes for ease
-
-const Person = function(name, age) {
-	// console.log(this);
-	this.name = name;
-	this.age = age;
-}
-
-Person.prototype.calcAge = function() {
-	console.log(this, 2022);
-}
-
-const Student = function(name, age, course) {
-	// console.log(this);
-	// this.name = name;
-	// this.age = age;
-	// Person(name, age); // it will not work coz Person toh contructor bna rha but this nhi ho rha new nhi h isliye
-	Person.call(this, name, age); // isliye use .call jisse this chale
-	this.course = course;
-}
-
-Student.prototype = Object.create(Person.prototype); // Object.create return empty object which gets store in Student.prototype or yeh phele hi hona chiaye sabseh coz nhi toh yeh override krdega sabko jaise jo next method h
-
-// Student.prototype = Person.prototype; // wrong way we dont want ki dono object same ho we want ki Person prototype object should be prototype of student.prototype, we want to inherit from it rather than specifing same object isko solve karega Object.create
-
-Student.prototype.intro = function() {
-	console.log(this.name);
-}
-
-const param = new Student('param', 23, 'CSE');
-console.log(param);
-param.intro();
-console.log(param.__proto__);
-console.log(param.__proto__.__proto__);
-
-Student.prototype.constructor = Student;
-console.dir(Student.prototype.constructor);
-
-
-... inheritance with classes
-
-classes mai jo bhi con fxn seh kiya ab automatically ho jata
-
-class PersonCl { 
-	constructor(name, age) {
-		this.name = name;
-		this.age = age;
-	}
-
-	calcAge() { 
-		console.log(this.age);
-	}	
-
-	get age() {
-		return this._age;
-	}
-
-	set age(value) {
-		this._age = value;
-	}
-
-	static hey() {
-		console.log(this);
-	}
-};
-
-class StudentCl extends PersonCl {
-	constructor(name, age, course) {
-		// super always needs to happen first! coz jisse this keyword ki access miljai
-		super(name, age);
-		this.course = course;
-	}
-
-	intro() {
-		console.log(this.name);
-	}
-
-	calcAge() { // isne override krdiya parent class ke calcAge ko ya bolo shadow krliya
-		console.log(this.age, 2022);
-	}
-}
-
-const param = new StudentCl('param', 20, 'CSE');
-const param1 = new StudentCl('param', 20); // parent ka chl jaiga agr child mai constructor nhi hua toh and agr constructor h and sate arguments nhi pass karo toh child ka hi chalega but undefined hoga
-
-console.log(param);
-
-console.log(param1);
-
-param1.intro();
-
-param1.calcAge() // child wala chalega
-
-
-
-... ineheritance obj create
-
-ismeh constructor and prototype property seh kuch lena dena nhi bs object inherit another object 
-
-const PersonProto = {
-	calcAge() {
-		console.log(2022);
-	},
-
-	init(name, age) { 
-		this.name = name;
-		this.age = age;
-	}
-};
-
-const paramjotsingh = Object.create(PersonProto); 
-const StudentProto = Object.create(PersonProto); // this create PersonProto as prototype of StudentProto
-StudentProto.init = function (name, age, course) {
-	PersonProto.init.call(this, name, age); // fxn peh init kr rha
-	this.course = course;
-}
-const param = Object.create(StudentProto);
-console.log(param); 
-
-
-...classes
-
-Yehi use hoti real world mai jyada
-
-class Account {
-	constructor(owner, currency, pin) {
-		this.owner = owner;
-		this.currency = currency;
-		this._pin = pin;
-		this._movements = []; // empty array h toh params na bnao
-		this.locale = navigator.language; // yeh toh fixed hi never chaning toh direct yehi likhdo param na bnao
-
-		console.log('Hey '); // yeh chl jaiga khud constructor chalega tab
-	}
-
-	// these methods are public interface of our objects and are called APIs
-	deposit(val) {
-		this._movements.push(val);
-	}
-
-	withdraw(val) {
-		this.deposit(-val); // dusre methods ko call kr skta h
-	}
-}
-
-const acc1 = new Account('param', 'EUR', 1111);
-console.log(acc1);
-
-// acc1._movements.push(250); // aise direct property sath interact mt karo methods bnao and aise krne seh rokhne kelia we use encapsulation
-
-acc1.deposit(250);
-acc1.withdraw(140);
-
-console.log(acc1);
-
-
-...encap
-
-private kardo jisse bahar seh modify nhi kr sake and APIs hi accesseble ho sirf
-
-js classes do not support data privacy and encapsulation so we fake it _ lagake it is not truely private and so we call them protected
-
-class Account {
-	constructor(owner, currency, pin) {
-		this.owner = owner;
-		this.currency = currency;
-		this._pin = pin;
-		//protected property access toh kr skte bahar seh but apni team mai we know we should not access it outside coz movement nhi _movement h
-		this._movements = []; // empty array h toh params na bnao
-		this.locale = navigator.language; // yeh toh fixed hi never chaning toh direct yehi likhdo param na bnao
-
-		console.log('Hey '); // yeh chl jaiga khud
-	}
-
-	// these methods are public interface of our objects and are called APIs
-	deposit(val) {
-		this._movements.push(val);
-	}
-
-	withdraw(val) {
-		this.deposit(-val); // dusre methods ko call kr skta h
-	}
-}
-
-const acc1 = new Account('param', 'EUR', 1111);
-console.log(acc1);
-
-// acc1._movements.push(250); // aise direct property sath interact mt karo methods bnao
-
-acc1.deposit(250);
-acc1.withdraw(140);
-
-console.log(acc1);
-
-
-... truely private
-
-Not supported abhi kuch kuch supported h kuch kuch nhi h
-
-1) Public fields = property
-2) Private fields
-3) Public methods
-4) Private methods
-5 6 7 8) static version of all 1 2 3 4)
-
-
-let x;
-clg(x) is undefined revise krva rha
-
-class Account {
-	// public fields (they are on instances)
-	locacle = navigator.language;
-
-	//private fields
-	#movements = []; 
-
-	constructor(owner, currency, pin) {
-		this.owner = owner;
-		this.currency = currency;
-		this._pin = pin;
-		//protected property access toh kr skte bahar seh but apni team mai we know we should not access it outside coz movement nhi _movement h
-		// this._movements = []; // empty array h toh params na bnao
-		// this.locale = navigator.language; // yeh toh fixed hi never chaning toh direct yehi likhdo param na bnao
-
-		console.log('Hey '); // yeh chl jaiga khud
-	}
-
-	// these methods are public interface of our objects and are called APIs
-	deposit(val) {
-		this.#movements.push(val);
-	}
-
-	//they are on prototype and are public methods
-	withdraw(val) {
-		this.deposit(-val); // dusre methods ko call kr skta h
-	}
-
-	//protected methods fake private
-	_deposit(val) {
-		this.#movements.push(val);
-	}
-
-	//private methods
-	#requestLoan(val) {
-		clg('hey');
-	}
-}
-
-const acc1 = new Account('param', 'EUR', 1111);
-console.log(acc1);
-
-// acc1._movements.push(250); // aise direct property sath interact mt karo methods bnao
-
-acc1.deposit(250);
-acc1.withdraw(140);
-
-console.log(acc1);
-
-// console.log(acc1.#movements); // error ajaiga cant access coz private h
-
-it is class field proposal abhi bhi chl rha isliye kabhi kabhi supported kabhi kabhi ni
-
-
-...chainable methods in class
-
-array mai jaise chaining hoti thi vo krni h toh 
-
-	deposit(val) {
-		this.#movements.push(val);
-		return this; // yeh kardo
-	}
-
-acc1.deposit(200).deposit(250).withdraw(100); // chaining
-
-jisse deposit ab this return kare mtlb vohi object and uspeh vapis deposit call krdiya smjhe
 
 
