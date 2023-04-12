@@ -1,24 +1,18 @@
 'use strict';
 
-const modal = document.querySelector('.modal');
-const btnModal = document.querySelectorAll('.show-modal');
+const dice = document.querySelector('dice');
+const player1 = document.querySelector('player1');
+const btn = document.querySelector('btn');
 
-for(let i = 0; i < btnModal.length; i++) {
-    console.log(btnModal[i].textContent);
-    btnModal[i].addEventListener('click', function() {
-        modal.classList.add('show-modal');
-        modal.classList.remove('show-modal');
-
-        modal.style.backgroundColor = 'red';
-    })
+function fxn() {
+    console.log('hello world');
 }
 
-document.addEventListener('keydown', function(e) {
-    console.log(e.key);
+dice.src = `dice-${val}.jpg`;
 
-    if(e.key === 'Escape') {
-        if(!modal.classList.contains('show-modal')) {
+document.getElementById(`current--${activePlayer}`);
+document.getElementByClassName(`current--${activePlayer}`);
 
-        }
-    }
-})
+player1.classList.toggle('active');
+
+btn.addEventListener('click', fxn);
