@@ -1,248 +1,297 @@
-Section 9
+section 10
 
-...array methods
+... coverting ..
 
-arrays are object tabhi unke methods h built in
+numbers are floating point numbers hamesha decimal hi hote 
 
-.slice() // yeh hamesha left to right hi jata jaise .slice(-2) h toh 2nd last index seh end tk h front tk nhi yeh yaad rakhi
+23 === 23.0 same baat h
 
-.slice(1, -2) mtlb 1 index seh 2nd last tk
+numbers are represented in 64base2 format means numbers are stored in binary format that means 0 and 1
 
-does not mutate the original array (does not change the original array)
+base10 0 to 9
+base2 0 to 1
 
-console.log(arr.slice()); // both for shallow copy use any
-console.log([...arr]);
+there are certain numbers difficult to resolve in base to (0.1)
 
-.splice is same as slice but ismeh original array mai change hoga
+0.1 + 0.2 === 0.3 false aiga
 
-does mutate the original array (does change the original array) 
+string to number 
 
-.splice krke jo splice kara vo mil jaiga and bacha hua arr mai rhejaiga mutate krdega
+console.log(Number('20'));
 
-[1, 2, 3, 4]
+console.log(+'20'); // type cohesion hoke convert kardega number mai, use this cleaner lgta
 
-console.log(arr.splice(2));  [3, 4]
+number to string is +'' yeh krde
 
-console.log(arr); [1, 2]
+every fxn is also a object
 
-console.log(arr.splice(-1)); // remove last element from array
+Number is object
 
-console.log(arr.splice(2, 3)); // beech ka hissa remove krdegi
+console.log(Number.parseInt('20px')); // by default 10 yeh karega ki number nikaldega and it is doing parsing
 
-console.log(arr.reverse()); // reverse arr and it mutates the array
+console.log(Number.parseInt('20px', 10)); // can give base 
 
-const letters = arr.concat(arr1); // mutate hoga mtlb ki arr mai arr1 bhi ajaiga WRONG mtlb likha sahi h but yeh mutate nhi ho rha letters mai arha sab arr mai nhi
-console.log([...arr, ...arr1]); // mutate nhi hoga same baat
+console.log(Number.parseInt('20rem', 2));
 
-console.log(arr.join('')); // isse puri ander ki cheeze join hoke string bn jaigi chaiye ander string ho ya number ya kuch bhi banega string
+console.log(parseInt('20em', 2)); // aise bhi call kr skte bina Number obj ke coz it is global fxn but in mordern js Number seh hi call karo
+
+console.log(Number.parseFloat('20.23abc   ')); // more encouraged to use this in modern javascript
+
+console.log(parseFloat('20.23abc   ')); // yeh floating point number nikaldega and spaces string sab ignore hogi
+
+console.log(Number.isNaN('anb')); // checking ki not a number toh nhi and anb string h toh false aiga
+
+console.log(Number.isNaN(20)); // yeh bhi false coz 20 number h
+
+console.log(Number.isNaN(+'abc')); // yeh true aiga coz abc in number NaN h
+
+console.log(Number.isNaN(23 / 0)); // /0 seh NaN aiga
+
+console.log(Number.isFinite(2)); // oppo to isNaN, it checks if it is a number or not
+
+console.log(Number.isInteger(23)); // check for integer
 
 
-... new method
+... rounding
 
-es2022
+console.log(Math.sqrt(24)); // sqrt
 
-const arrr = [1, 2, 3];
-console.log(arrr[0]);
-console.log(arrr.at(0));
+console.log(25 ** (1 / 2)); // sqrt hi h exponential ki help seh
 
-console.log(arrr[arrr.length - 1]) // .length karo bt karo
-console.log(arrr.at(-1)); // last index wala ajaiga
+console.log(25 **(1 / 3)); // cube root ** is expo
 
-it also works on string
+console.log(Math.max(3, 4, 5, 6, 1, '23')); // type cohehisoin krte h sab but parse nhi krte 
 
-.at use kr skta sahi h and [] yeh bhi kr skta bracket notation
+console.log(Math.max(2, 3, 4, 'abc2')); // NaN aiga parsing nhi h
 
-... for each
+console.log(Math.min(2, 34, 5));
 
-for (let movement of movements) {
-for(let [i, movement] of movements.entries()) { [index, movement] h
-  if (movement > 0) {
-    console.log(1);
-  } else {
-    console.log(2);
-  }
+console.log(Math.PI * Number.parseFloat('10px') ** 2); // pie r*2
+
+console.log(Math.trunc(Math.random() * 6) + 1); // math random [0, 1) deta, trunc decimal htata roundoff nhi krta +1 isliye coz 1-6 chaiye dice roll mai
+
+console.log((Math.trucc(Math.random() * (max - min)) + 1) + min); // yeh min and max ke beech mai dega number
+
+console.log(Math.trunc(2.3)); // remove decimal 2
+
+console.log(Math.round(23.4)); // pass mai round 23
+
+console.log(Math.round(23.6)); // 24
+
+console.log(Math.ceil(23.3)); // celing mtlb upr tarf round off 24
+
+console.log(Math.floor(23.2)); // neeche taraf round off 23
+
+yeh sab type cohesion peh chlte parsing peh nhi 
+
+console.log((2.7).toFixed(0)); // to fixed return string and (2.7) (primitive) ki boxing krdega js mtlb ki (2.7) ko Number object mai transform krdega and usmeh method call krdega 
+
+console.log((2.37).toFixed(2));
+
+
+.. remainder 
+
+console.log(5 % 2); // remainder operator
+
+console.log(5 / 2); // divide
+
+console.log(4 % 2 == 0); // even odd
+
+function isEven(x) { // yeh bkr way likhne ka logic same h but code qual
+  if(x % 2 == 0) console.log('isEven');
 }
-ismeh break continue chl jate h
 
-forEach higher order fxn and function is callback fxn
-movements.forEach(function(movement, index, array) { // 0: function(200) 1: function(450) 2: fucntion(400) mtlb yeh h ki jo movement h vo arr[i] h ek tarah seh
-if(index === 1) break; nhi kr skte yeh   
-if(movement > 0) { // movement is value arr[i], index is index, and array is array and isi order mai likhne h params
-      console.log(movement, index, array);
-   } else {
-      console.log(2);
-   }
-})
+const isEvenSirWay = x => x % 2 == 0 ? 'isEven' : 'isOdd'; // good way
 
-for each mai break continue nhi chalega
 
+...numeric
 
-... for each in maps and sets
+const x = 287_349_222; // only for code redability output 287349222 hi aiga bs code redability is 287,349,222
 
-currencies.forEach(function(value, key, map) { // map mai value same as arr[i], key as index and map as arr
-  // console.log(value, key, map);
-});
+const PI = 3._14; it is not allowed only placing between digits is allowed 
 
-// currenciesUnique.forEach(function(value, key, map) { // set mai bhi value key map same, key and value is same in set mtlb key ki koi zaroort nhi
-// currenciesUnique.forEach(function(value, value, map) { // 2 params ka same name nhi ho skta dimag lagao
-currenciesUnique.forEach(function(value, _, map) { // _ it is throw away variable, variable which is unessesary
-  console.log(value, map);
-});
+const z = Number('349_34'); // it will prinit NaN mtlb ki number jo API seh arha usmeh use mt karo
 
-... map filter reduce
 
-string methods alg h iteratable ke alg h array ke alg h
+...big int
 
-...map
+es2020
 
-const newArr = movements.map(function(movement) { // for each loop tarah hi h and ismeh new array milega mutable nhi h
-  return movement * eurToUsd; // yeh values bnti rahegi new arr mai us index mai jo tu return karega
-})
+number are represented in 64 bits only 53 are used to store digits and others to store decimal
 
-console.log(movements, newArr);
+console.log(2 ** 53 - 1); // itna hi represent kr skta h normally 53 bits
 
-map filter reduce iteratable ke nhi array ke h
+console.log(Number.MAX_SAFE_INTEGER); // yeh and upr wala same 
 
-Global variable seh bhi access kr skte ho lekin not good way hamesha fxn(pass) krdo jisse sahi rahega global sath mt khelo
+console.log(2 ** 53 + 105); // yeh glt aiga sahi seh represent nhi kr paigi isliye BigInt aya
 
-array ata 
+console.log(982403983209849283490293840923849023849); // yeh big int nhi h and precesion kum aigi 
 
+console.log(203948230948203984092384092380480283408n); // big int h n aiga last mai output and input both mai
 
-... filter
+console.log(BigInt(230948092384092830940234234234)); // outputn n aiga last mai input mai BigInt likhdiya
 
+bigint kelia opertor sab chalenge
 
-const array = movements.filter(movement => { // filter krdega yeh bhi
-  return movement > 0;
-})
+console.log(1000n + 1000n);
 
-array ata
+big int sath kuch mix nhi kr skte
 
+console.log(10 + 1000n); // error cant mix
 
-... reduce
+console.log(10n > 10); // 10n == 10 h type alg h bs bigint h 10 hi
 
-const sum = movements.reduce((accumulator, cur, i, arr) => { // accumulator mtlb usmeh add ho rhe h return ki help seh and sab kuch sum mai ajaiga
-  return accumulator + cur;
-}, 0) // init value of accumulator 
+console.log(11n > 10); // true 11 > 10
 
-yeh ek value ati last mai
+console.log(10n === 10); // false type check alg
 
-const max = movements.reduce((accumulator, cur, i, arr) => {
-  if(cur > accumulator) return cur; // return krna mtlb accumulator mai store krvana
-  else return accumulator;
-}, movements[0])
+console.log(typeof BigInt); // bigInt
 
+console.log(10n == 10); // true
 
-...chaining of array methods
+console.log(Math.sqrt(16n)); // yeh nhi kr skte sirf comparison hi use kr skte
 
+console.log(10n / 3n); // 3n dedega output rather than 3.3333
 
-const ans = movements.filter((c, i, arr) => c > 0).map((c, i, arr) => c * 10); // chaining kr skte ho but array jo return kare usmeh hi number peh chain kaise hi lagai ga obvio
 
-array ke methods h toh filter map peh chain kr skta reduce peh nhi coz reduce array nhi h single value h
+... Creating dates
 
-map ka array filter ka array seh jo aya usmeh work kr rha h toh map mai arr filter ka arr h
 
-jyada chaining mt karo kum hi karo
+console.log(new Date());
 
-jismeh mutate ho rha unko chain mt karo jaise splice jaise reverse 
+console.log(new Date('Aug 02 2021 18:05:41'));
 
+console.log(new Date('oct 6 2023')); // yeh khud seh diya h js wali string use krlo upr jaise ki better coz reliable h and apni dene mai yeh h ki code break bhi ho skta mtlb pht bhi skta
 
-...find
+console.log(new Date(account1.movementsDates[0])); // string deni h
 
-console.log(movements.find(mov => mov < 0)); // find method bhi for each ki tarah hi h pure array peh traverse karega jispeh first match krjai vo return krdega and rukh jaiga
-mov is cur is arr[i] 
+console.log(new Date(2022, 10, 19, 15, 23, 5)); // (year, month (0 based h mtlb 0 january h), date, hours, secs, mili)
 
-array of objects bht chlta h
+console.log(new Date(2022, 10, 31)); // js auto correct krdega as 31 nhi hota 30 krdega
+  
+console.log(new Date(0)); // 1 jan 1970 seh chlta
 
-console.log(account.find(obj => obj.owner === 'Param')) // array of objects h obj aya match kiya yeh element return karega array ka or vo object h
+console.log(new Date(3*24*60*60*1000)); // 1 jan 1970 mai 3*24... mtlb 3 days add krdeta mtlb argument mai usne secs liya
 
+const now = new Date(); // new date ajati timestamp mai (IST is indian standard time)
 
-...findIndex
+console.log(now.getYear()); // dont use this use fullyear
 
+console.log(now.getFullYear());// use this for year
 
-same as find bas index dedega and syntax sab same .findIndex
+console.log(now.getMonth()); // use this for month
 
-it is diff from indexof coz usmeh sirf true false ata and callback nhi pass kr skte the sirf value seh search karo idhr kr skte call back and ache seh search kr skte
+console.log(now.getDate());
 
+console.log(now.getDay());
 
-... some and every
+console.log(now.getMonth());
 
-console.log(movements.includes(-130)); // ismeh -130 ki jagah condition check nhi kr skte 
+console.log(now.getMinutes());
 
-console.log(movements.some(mov => mov > 0)); // include mai agr condition check krni ho toh use .some, callback seh check condition in callback return t/f
+console.log(now.getSeconds());
 
-dono return t/f
+console.log(now.toISOString()); // International standards
 
-console.log(movements.every(mov => mov < 0)); // agr sab true hui toh condition peh tab t return hoga nhi toh false
+console.log(now.getTime()); // yeh timestamp dega in milisecond from 1jan 1970
 
-const fxn = mov => mov < 0;
-console.log(movements.every(fxn)); // callback fxn ko aise bhi pass kr skte call mt krna
+console.log(new Date(1681113054029)); // miliseconds mai add krdo vo total 1970 seh add hojaiga
 
+console.log(Date.now()); // it gives timestamp in milliseconds of now
 
-...flat and flatMap 
+now.setFullYear(2040); // aise existing date mai change krne kelia
 
-const arrr = [[1, 2, 3], [4, 5, 6], 10]; // ismeh jo nested array h vo bahar ajainge and ek bahar ainge [1, [2, [3]]] hoga toh [1, 2 , [3]] aise hoga sab ek ek bahar
 
-console.log(arrr.flat(kitna deep jana btado)); // no callback fxn this time xD
+...operations 
 
-nest ke ander nest ke ander nest toh btado kitna deep jana params mai 
+const future = new Date(2037, 10, 19, 15, 23);
 
-flatMap combines flat and map together and it only goes one level deep usse neeche jana toh flat hi use krke chain krna padega map sath
+const now = new Date(); // yeh timestamp nhi h yeh abhi ki date h and date.now() timestamp h
 
-it return array
+console.log(future); // in string return hogi
 
+console.log(now); // string return
 
-... sorting
+console.log(+future); // yeh int mai convert hogi
 
+console.log((+future - +now) / (1000 * 60 * 60 * 24)); // +future - +now seh milisecons milgya and usko convert krdiya days mai / krke
 
-const owners = ['param', 'taran', 'hey'];
+Math.abs(-10); // gives 10
 
-console.log(owners.sort()); // .sort mutate krdeta h === console.log(owners);
 
-const x = [1, 2, 3, 4, -1, -2, -3];
+... INTL dates
 
-console.log(x.sort()) // number peh sorting string ki tarah hoti isliye output ata -1 -2 -3 1 2 3 4 aise naki -3 -2 ...
+it is an api
 
-agr number mai krni toh callback do
+it allows to format result according to different languages mtlb usa indian yeh sab naki cpp java
 
-// return < 0 A, B (keep order)
-// return > 0 B, A (swicth order)
+ISO language ke according 
 
-console.log(x.sort((a, b) => {
-  return a > b ? 1 : -1; // number here does not matter 0 seh bada ya chota hona chaiye
-  return a - b; // math lagao dimag
-}) );
+day/month/year h ya month/day/year ya ... kya h language wise
 
-and yeh sab .sort mutate hi krdeta
+console.log(new Intl.DateTimeFormat('en-IN').format(new Date())); // ismeh apna locale de skte ISO language ka and ismeh time nhi ata sirf date ati
 
-and mix datatypes mai nhi work karega
+const options = { // time nhi arha tha isliye jo chaiye vo object pass krdiya neeche
+  hour: 'numeric',
+  minute: 'numeric',
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  // weekday: 'numeric',
+  weekday: 'long',
+}
 
+console.log(new Intl.DateTimeFormat('en-IN', options).format(new Date()));
 
-... create arrays
+const locale = navigator.language || navigator.languageCode // browser seh language leke uske according locale de rhe
 
-typeof array is object as you know
+console.log(new Intl.DateTimeFormat(locale, options).format(new Date()));
 
-console.log([1,2,3]);
 
-console.log(new Array(1, 2, 3));
+...INTL numbers
 
-const y = new Array(1, 2);
+console.log(new Intl.NumberFormat('en-IN').format(3249234.34)); // number ko format krdega locale ke hisab seh , lgadega yeh sab
 
-const x = new Array(7); // single param dega toh 7 size ka empty array create hoga EMPTY yaad rkha 0 nhi 
+console.log(new Intl.NumberFormat(navigator.language).format(3249234.34)); // navigator.language is ki browser seh language lagana
 
-x.fill(0); // isse hr jagah 0 fille hojaiga
+const options = { // yeh docs mai dekhlo
+  style: 'currency', // 'units' 
+  currency: 'INR', // 'celsius', 'miles-per-hour.....
+}
 
-x.fill(1, 3, 5); // isse (1 fill hoga, start, end)
+console.log(new Intl.NumberFormat(navigator.language, options).format(3249234.34)); // options object pass kr skte
 
-const z = [1, 3, 4];
-z.fill(100, 2, 3); // 100 fill start = 2, end = 3
 
-new array banake fill krne seh acha use .from directly steps bachao
+... settimeout
 
-const y = Array.from({length: 7}, (cur, i) => i); // (obj size btado, callback(current, currIndex) kuch bhi krlo)
-const z = Array.from({length: 7}, (_, i) => i);
+settimeout runs once after define time
 
+and setinterval keeps running until we stop it
 
+js hits settimout toh vo keep counting time in background and register this callback fxn in settimout to be called after the time has elapsed and immediately it will move to next line and this mechanism is called async js
 
+const arr = [2, 3];
 
+const timer = setTimeout((x, y) => console.log(x), 3000, ...arr); // callback mai pass krne kelia arguments time ke baad do and time ms mai h and arr[0] arr[1] bhi kr skte but noob way spread krdo
+
+agr setTimout bina seconds toh 0 mana jaiga default
+
+setTimeout(() => console.log(2)); // by default 0 sec but phir bhi last wala hey ke baad chalega iska reason baad mai dekho
+
+if(arr.includes('2')) clearTimeout(timer); // clear bhi kr skte mtlb chlne seh rokh skte
+
+console.log('hey'); // sabseh phele hey print hoga then setTimout chlega
+
+setInterval(() => { // hrr 1000ms == 1s baad chalega pheli baari bhi 1000ms ke baad hi chalega immediate chalana toh uske lia alg fxn bnalo callback ka usko phele bahar call krdo then setInterval mai call
+  console.log(new Date()); 
+}, 1000);
+
+fxn(); // immedaite calling
+setInterval(fxn, 1000); // 1000 milisec baad calling
+
+clearInterval(timer); // to stop kyuki vo hrr time baad chl rha isliye stop krdo usse
+
+we can do this
+const timer = setInterval(() => {clearInterval(timer)}, 1000); kehne ka mtlb clearInterval tu setInterval ke ander bhi call kr skta
 
 
