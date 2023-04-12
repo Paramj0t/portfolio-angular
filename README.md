@@ -1,196 +1,248 @@
-Section 8
+Section 9
 
-... default params
+...array methods
 
-const fxn = function (a = 1, b = a * 2, c) { // es6 isi order mai js variables bnata phele a then b
-	//es5
-	// a = a || 1;
-	// b = b || 2;
-	
+arrays are object tabhi unke methods h built in
 
-	const obj = {
-		a,
-		b,
-	}
+.slice() // yeh hamesha left to right hi jata jaise .slice(-2) h toh 2nd last index seh end tk h front tk nhi yeh yaad rakhi
 
+.slice(1, -2) mtlb 1 index seh 2nd last tk
+
+does not mutate the original array (does not change the original array)
+
+console.log(arr.slice()); // both for shallow copy use any
+console.log([...arr]);
+
+.splice is same as slice but ismeh original array mai change hoga
+
+does mutate the original array (does change the original array) 
+
+.splice krke jo splice kara vo mil jaiga and bacha hua arr mai rhejaiga mutate krdega
+
+[1, 2, 3, 4]
+
+console.log(arr.splice(2));  [3, 4]
+
+console.log(arr); [1, 2]
+
+console.log(arr.splice(-1)); // remove last element from array
+
+console.log(arr.splice(2, 3)); // beech ka hissa remove krdegi
+
+console.log(arr.reverse()); // reverse arr and it mutates the array
+
+const letters = arr.concat(arr1); // mutate hoga mtlb ki arr mai arr1 bhi ajaiga WRONG mtlb likha sahi h but yeh mutate nhi ho rha letters mai arha sab arr mai nhi
+console.log([...arr, ...arr1]); // mutate nhi hoga same baat
+
+console.log(arr.join('')); // isse puri ander ki cheeze join hoke string bn jaigi chaiye ander string ho ya number ya kuch bhi banega string
+
+
+... new method
+
+es2022
+
+const arrr = [1, 2, 3];
+console.log(arrr[0]);
+console.log(arrr.at(0));
+
+console.log(arrr[arrr.length - 1]) // .length karo bt karo
+console.log(arrr.at(-1)); // last index wala ajaiga
+
+it also works on string
+
+.at use kr skta sahi h and [] yeh bhi kr skta bracket notation
+
+... for each
+
+for (let movement of movements) {
+for(let [i, movement] of movements.entries()) { [index, movement] h
+  if (movement > 0) {
+    console.log(1);
+  } else {
+    console.log(2);
+  }
 }
+ismeh break continue chl jate h
 
-fxn('10'); // aise kr skta ismeh error nhi aiga ismeh b undefined hojaiga kyuki tune kuch bheja nhi and phir vo default value h toh vo lelega
-// fxn(2, ,10); // dekh aise skip nhi kr skta error aiga, question is ki tu chahta default value lele beech wala but tu skip bhi nhi kr stka and agr tune 10 bhejdiya toh vo teri value lelega default ki jagah toh aise kya kare, jab koi value define nhi h toh undefined ata toh tu ek kaam kr undefined bhejde agr undefined bhejega toh vo default value lelega
-fxn(2, undefined, 10);
+forEach higher order fxn and function is callback fxn
+movements.forEach(function(movement, index, array) { // 0: function(200) 1: function(450) 2: fucntion(400) mtlb yeh h ki jo movement h vo arr[i] h ek tarah seh
+if(index === 1) break; nhi kr skte yeh   
+if(movement > 0) { // movement is value arr[i], index is index, and array is array and isi order mai likhne h params
+      console.log(movement, index, array);
+   } else {
+      console.log(2);
+   }
+})
 
-agr fxn ko call nhi kiya h toh jo value store karega vo pura fxn hi karega
+for each mai break continue nhi chalega
 
 
-... primitive vs
+... for each in maps and sets
 
-fxn(primitive) mai reference nhi jati it creates a copy // passing by value
+currencies.forEach(function(value, key, map) { // map mai value same as arr[i], key as index and map as arr
+  // console.log(value, key, map);
+});
 
-fxn(obj) mai reference jati hai WRONG reference idhr value hi h toh value jati h naki reference, basically we pass the reference to the fxn but do not pass by reference
+// currenciesUnique.forEach(function(value, key, map) { // set mai bhi value key map same, key and value is same in set mtlb key ki koi zaroort nhi
+// currenciesUnique.forEach(function(value, value, map) { // 2 params ka same name nhi ho skta dimag lagao
+currenciesUnique.forEach(function(value, _, map) { // _ it is throw away variable, variable which is unessesary
+  console.log(value, map);
+});
 
-JS does not have passing by reference for both primitive and objects
+... map filter reduce
 
+string methods alg h iteratable ke alg h array ke alg h
 
-...first class
+...map
 
+const newArr = movements.map(function(movement) { // for each loop tarah hi h and ismeh new array milega mutable nhi h
+  return movement * eurToUsd; // yeh values bnti rahegi new arr mai us index mai jo tu return karega
+})
 
-// used as a callback fxn
-const convertString = function(x) {
-	return x + ' ';
-} 
+console.log(movements, newArr);
 
+map filter reduce iteratable ke nhi array ke h
 
-// Higher order fxn
-const fxn = function(cS) { // cS is a callback fxn
-	console.log(cS(2));
-	console.log(2);
-	console.log(cS.name);
-}
+Global variable seh bhi access kr skte ho lekin not good way hamesha fxn(pass) krdo jisse sahi rahega global sath mt khelo
 
-fxn(convertString); // we only pass the value, we do not call the fxn and convertString is called callback fxn and fxn is called higher order fxn
+array ata 
 
-['param', 'jot'].forEach(print); // print bhi callback fxn h
 
-Js uses callbacks all the time becoz to abstract the code improves code and DRY
+... filter
 
-Higher order fxn ko higher order isliye bola jata kyu ki vo higher level of abstraction peh work krte jismeh vo lower level of abstraction use krte
 
-const x = function() {
-	y();
-}
+const array = movements.filter(movement => { // filter krdega yeh bhi
+  return movement > 0;
+})
 
-const y = function() {
-	console.log('1');
-}
+array ata
 
-x();
 
-// dono mai difference h 
+... reduce
 
-const x = function() {
-	y();
-}
+const sum = movements.reduce((accumulator, cur, i, arr) => { // accumulator mtlb usmeh add ho rhe h return ki help seh and sab kuch sum mai ajaiga
+  return accumulator + cur;
+}, 0) // init value of accumulator 
 
-x();
+yeh ek value ati last mai
 
-const y = function() {
-	console.log('1');
-}
+const max = movements.reduce((accumulator, cur, i, arr) => {
+  if(cur > accumulator) return cur; // return krna mtlb accumulator mai store krvana
+  else return accumulator;
+}, movements[0])
 
 
-... fxn returning fxn
+...chaining of array methods
 
-const hey = function() {
-	return function() {
-		console.log('hey');
-	}
-}
 
-const x = hey();
-x();
+const ans = movements.filter((c, i, arr) => c > 0).map((c, i, arr) => c * 10); // chaining kr skte ho but array jo return kare usmeh hi number peh chain kaise hi lagai ga obvio
 
-hey()(); // same baat aise kr skte 
+array ke methods h toh filter map peh chain kr skta reduce peh nhi coz reduce array nhi h single value h
 
+map ka array filter ka array seh jo aya usmeh work kr rha h toh map mai arr filter ka arr h
 
-... call and apply
+jyada chaining mt karo kum hi karo
 
+jismeh mutate ho rha unko chain mt karo jaise splice jaise reverse 
 
-As we know fxn is a object and object has methods so fxn also have objects
 
-const obj = {
-	a: 1,
-	fxn() {
-		console.log(this);
-	}
-}
+...find
 
-const x = obj.fxn;
+console.log(movements.find(mov => mov < 0)); // find method bhi for each ki tarah hi h pure array peh traverse karega jispeh first match krjai vo return krdega and rukh jaiga
+mov is cur is arr[i] 
 
-x(); // isse undefined print hoga coz this keyword depends ki usse call kaise kiya ja rha h
+array of objects bht chlta h
 
-x.call(obj, bache hui arguments fxn ) // isse tum btado ki this kis object ko ponit kare phela argument and uske baad bache hui fxn ke arguments
+console.log(account.find(obj => obj.owner === 'Param')) // array of objects h obj aya match kiya yeh element return karega array ka or vo object h
 
-apply is same as call bs apply(obj, [array of data === arguments]) and call(obj, data === arguments)
 
-Apply is not used in modern js isse acha apply(obj, []) yeh array ko spread krdega automatically isse acha call use krlo ...arr krdo call(obj, ...arr)
+...findIndex
 
 
-...bind method
+same as find bas index dedega and syntax sab same .findIndex
 
-It is same as call but diff is that it does not immeditaly call the fxn instead it return a new fxn where the this keyword is bound
+it is diff from indexof coz usmeh sirf true false ata and callback nhi pass kr skte the sirf value seh search karo idhr kr skte call back and ache seh search kr skte
 
-const y = x.bind(obj); // us fxn ki value hi dedega bound krke jisse this chl jai
 
-y();
+... some and every
 
-const z = x.bind(obj, 1, 2); // ismeh bhi arguments sth pass kr skte
+console.log(movements.includes(-130)); // ismeh -130 ki jagah condition check nhi kr skte 
 
-z(); // toh idhr arguments pass krne ki need nhi h or ab nhi krskta change
+console.log(movements.some(mov => mov > 0)); // include mai agr condition check krni ho toh use .some, callback seh check condition in callback return t/f
 
-Partial application  means that we can preset params
+dono return t/f
 
-const fxn = (a, b) => a + b;
+console.log(movements.every(mov => mov < 0)); // agr sab true hui toh condition peh tab t return hoga nhi toh false
 
-console.log(fxn(2, 3)); // normal call
-console.log(fxn.bind(null, 1, 1)()); // bind krdiya but obj h nhi toh null dedo and preset krdiya 1, 1 and last mai jo () likha h vo isliye coz bind toh value dega mtlb pura fxn dega toh usse call kro
-console.log(fxn.bind(null, 1, 1)(2, 2)); // 2, 2 jo likha h idhr vo glt h 1, 1 jab preset kr chuka h toh arguments 2, 2 nhi kr skta
+const fxn = mov => mov < 0;
+console.log(movements.every(fxn)); // callback fxn ko aise bhi pass kr skte call mt krna
 
-const fxn1 = fxn.bind(null, 1); // dekh ek argument bhi preset kr skta and dusra khud seh bhej skta
 
-console.log(fxn1(2));
+...flat and flatMap 
 
+const arrr = [[1, 2, 3], [4, 5, 6], 10]; // ismeh jo nested array h vo bahar ajainge and ek bahar ainge [1, [2, [3]]] hoga toh [1, 2 , [3]] aise hoga sab ek ek bahar
 
+console.log(arrr.flat(kitna deep jana btado)); // no callback fxn this time xD
 
-... immediate invoked
+nest ke ander nest ke ander nest toh btado kitna deep jana params mai 
 
-function() {} it is statement isko expression bnao ki (fucntion() {}) and call krdo () lgake // IIFE bolte immediatly invoked functional expression
+flatMap combines flat and map together and it only goes one level deep usse neeche jana toh flat hi use krke chain krna padega map sath
 
-(function() {
-	const isPrivate = 2; // this data is encapsulated isnide the fxn scope mtlb data privacy rakhi h
-	console.log('hey');
-})();
+it return array
 
-(() => {console.log('object');})();
 
-() wrap seh statement seh expression
-[] wrap seh variable wala
+... sorting
 
-IIFE is not used in modern js as data encapsulation coz ab hum data encapsulation {} aise block seh bhi bna skte but it is used for immediate invoking fxn
 
+const owners = ['param', 'taran', 'hey'];
 
-... closures
+console.log(owners.sort()); // .sort mutate krdeta h === console.log(owners);
 
-We can closures makes a fxn remm all the variables that existed at the fxn birth place
+const x = [1, 2, 3, 4, -1, -2, -3];
 
-closure has priority over scope chain
+console.log(x.sort()) // number peh sorting string ki tarah hoti isliye output ata -1 -2 -3 1 2 3 4 aise naki -3 -2 ...
 
-console.dir(booker); // isse closures dekh skte ho
+agr number mai krni toh callback do
 
-let f;
+// return < 0 A, B (keep order)
+// return > 0 B, A (swicth order)
 
-const g = function() {
-	const a = 23;
-	f = function() {
-		console.log(a * 2);
-	}
-}
+console.log(x.sort((a, b) => {
+  return a > b ? 1 : -1; // number here does not matter 0 seh bada ya chota hona chaiye
+  return a - b; // math lagao dimag
+}) );
 
-const h = function() {
-	const b = 777;
-	f = function() { // idhr f reborn hua 
-                console.log(b * 2);
-        }
-}
+and yeh sab .sort mutate hi krdeta
 
-g();
-h();
-f();
+and mix datatypes mai nhi work karega
 
-console.dir(f);  // jab reborn hua toh new jagah ka closure hoga purana del hojaiga
 
-closure arguments bhi leti h
+... create arrays
 
-closures ki bhi scope chain ki priority hoti h
+typeof array is object as you know
+
+console.log([1,2,3]);
+
+console.log(new Array(1, 2, 3));
+
+const y = new Array(1, 2);
+
+const x = new Array(7); // single param dega toh 7 size ka empty array create hoga EMPTY yaad rkha 0 nhi 
+
+x.fill(0); // isse hr jagah 0 fille hojaiga
+
+x.fill(1, 3, 5); // isse (1 fill hoga, start, end)
+
+const z = [1, 3, 4];
+z.fill(100, 2, 3); // 100 fill start = 2, end = 3
+
+new array banake fill krne seh acha use .from directly steps bachao
+
+const y = Array.from({length: 7}, (cur, i) => i); // (obj size btado, callback(current, currIndex) kuch bhi krlo)
+const z = Array.from({length: 7}, (_, i) => i);
+
+
+
 
 
 
