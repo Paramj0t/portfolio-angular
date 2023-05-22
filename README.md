@@ -1,310 +1,256 @@
+
 .1
+
+Vohi hote directives structural … yeh sab
 
 
 .2
 
-Ek compo sab mt rakho alg alg rakho betterment kelia
+ngFor and ngIf directives hi h
 
-Kisi folder ke ander create knri ho toh 
+Inbuilt wale h 
 
-Ng g c folder1/folder2/name
+ngFor/ngIf saare properties accessible h ts file ki.
 
-By default app folder hota jidr component create hota.
+<li
+     class="list-group-item" *ngFor="let number of numbers">
+     {{number}} // string interpolation krke hi display kr skte dynamic html mai
+</li>
+
+
+We cant have more than one structural directive on same element
+ <li
+         class="list-group-item" *ngFor="let number of numbers" *ngIf="number % 2 === 0">
+         {{number}}
+ </li>
+
+Or ek peh do karo bhi mt
 
 
 .3
 
-Communication hr jagah ho skti … abhi compo to compo dekh rhe
+ngStyle/ ngClass directive hi h
+
+<li
+          class="list-group-item" *ngFor="let number of numbers" [ngClass]="{odd: true}" [ngStyle]="{backgroundColor: 'green'}">
+          {{number}}
+</li>
+
+<ng-template [ngIf]="onlyOdd">
+        <p>Only odd</p>
+      </ng-template>
+
+
 
 .4
 
-By default all prop of components are only accessible inside the component not outside.
+Angular mai styles camelCase mai honge css mai camel-case aise honge bem naming convention
 
-You should be clear ki konsi property world ko export krno mtlb component sehh bahar nikalni.
+import {Directive, ElementRef, OnInit} from '@angular/core'
 
-Jo bhi ts file mai likha vo properties h vo component isliye accessible thi ngfor if mai … ab bahar access deni h toh explicitly mention krna padega.
+@Directive({
+        selector: '[appBasicHighlight]' // idhr jo likha h ki [] square brackets ke ander vo tune isliye nhi likha kyuki angular ne bola vo isliye likha kyu ki ab tu name kahi bhi bina square brackets ke use kr sskta … array nhi h.
+})
+export class BasicHighlightDirective implements OnInit { // component tarah hi h sab hooks chlte
 
-Custom property bindings (ts child sehh parent template[html])
+        constructor(private elementRef: ElementRef) {}
 
-Jismeh @input laga decorator uspeh bind karo mtlb bind to element agr element mai lgaya toh
+        ngOnInit() {
+                this.elementRef.nativeElement.style.backgroundColor = 'green';
+        }
+}
 
-Child mai @input tha parent ne bind krliya and parent ne data neeche beeja 
+ declarations: [
+    AppComponent,
+    BasicHighlightDirective // inform angular in app module
+  ],
 
-@Input() element: {type: string, name: string, content: string};
+ <p appBasicHighlight>Style me with my directive</p> naki [appbace…] aise.
 
- <app-server-element *ngFor="let element of serverElements" [element]="serverElements"></app-server-element>
 
 
 .5
 
-Apni property bnake usko bind kra h @Input she
+ngOnInit() {
+                this.elementRef.nativeElement.style.backgroundColor = 'green'; // yeh mt karo coz angular bina dom ke bhi render krta h template ko toh phir yeh properties nhi chalegi.
+}
 
-Ab mujhe apne component peh kuch or name chaiye x property ka or same property bahar use ho rhi h uska kuch or name sehh ho toh alias dedo
 
- @Input('srvElement') element: {type: string, name: string, content: string};
- // srv element alias h bahar is name sehh use hoga ab
+Ng g d name directive cli she banane kelia
+
+
+import { Directive, Renderer2, OnInit, ElementRef } from '@angular/core';
+
+@Directive({
+  selector: '[appBetterHighlight]' // is selector she ab kahi bhi access kr skte ho 
+})
+
+export class BetterHighlightDirective implements OnInit{
+
+  constructor(private elRef: ElementRef, private renderer: Renderer2) { }
+
+  ngOnInit() {
+    this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'blue'); // better way aise karo change kuch bhi (elementRef, property to set, kay set ki)
+  }
+}
+
+Html mai kaise kr pa rhe selector ke through dimag lagao
+
+
+Renderer is better approach to manipulate the dom.
+
+Why better?
+Angular is not limited to running in the browser jidr browser nhi hua udhr dom kaise hoga isliye use renderer.
 
 
 .6
 
-Parent -> data neeche -> child @Input sehh or property bind hogi child ki -> parent shh. (Custom property binding)
+We need to react to element on which directives sit on.
 
+New decorator add krlo iske lia
 
-Binding to custom events
-
- <app-cockpit (serverCreated)="onServerAdded($event)" (blueprintCreated)="onBlueprintAdded($event)"></app-cockpit>
-
-// yeh custom event h apne component peh
-
-onServerAdded(serverData: {serverName: string, serverContent: string}) { // isliye idhr serverData ka type khud sehh diya h ki isi type ka hona chaiye custom h khud ka isliye agr click event hota toh we cant change it
-    this.serverElements.push({
-      type: 'server',
-      name: serverData.serverName,
-      content: serverData.serverContent
-    });
+It  takes event name as input dom mai built in wale. @HostListener(event dom wala built in name)
+ @HostListener('mouseenter') mouseoveranyname(eventData: Event) {
+    
   }
 
-
-Child component mai emit karenge event ko parent ki taraf and parent html mai catch karega
-
-Component.ts child ki
-serverCreated = new EventEmitter<{serverName: string, serverContent: string}>(); // yeh eventemitter bnaliya jismeh jo data accept kr rha vo <idhr dediya>() and obj bnaliya () [construcotr call krke].
-
-
-Event emiiter is a obj in angular which allows you to emit your own event.
-
-
-We added @Input to make a property bindable from outside.
-
-Now we need to add something to property to make it kind of listnable from outside
-
- @Output() serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();
-
-onAddServer() {
-    this.serverCreated.emit({serverName: this.newServerName, serverContent: this.newServerContent})
-  }
-
-<app-cockpit (serverCreated)="onServerAdded($event)" (blueprintCreated)="onBlueprintAdded($event)"></app-cockpit> // custom event
-
-@input sehh she ander lete the and @Output she bahar jo name h wiase hi hota idhr
-
-
-Sab kuch bnaigai compoonent peh ho rha h
+Yeh automatically chlta h khud she.
 
 
 .7
 
-  @Output('srvCreated') serverCreated = new EventEmitter<{serverName: string, serverContent: string}>();
-
-// aliasing is name sehh use karo ab.
+Ab renderer ke bina krna h toh use @HostBinding
 
 
-.8
-
-
-Yeh upr ke dono mehtod parent child wale the … siblings ke nhi
-
-
-.9
-
-View encapsulation of angular
-
-Angular ka behaviour h ki css property jo uss component peh h uspeh hi rahegi
-
-
-Or kahi kahi jaise p element peh color kiya tha inspect peh vo p[ng …] something arha toh vo angular ki specific h toh that component bta rha
-
-Same attribute dedeta toh all elements in one component to differentiate
-
-
-
-.10
-
-If you want to change view encapsultaion of angular
-
-
-@Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  encapsulation: ViewEncapsulation.None = idhr selectors change nhi krta angular isliye app wise lg jate
-						.Emulated = defualt behaviour 
-						.native same as emulated it used shadow dom technology
-})
-
-
-.11
-
-We can use local reference only in template not in ts file
-
- <input type="text" class="form-control" [(ngModel)]="newServerName"> // jab ng model use nhi krna toh use ref
-
- <input type="text" class="form-control" #serverNameInput> // ref leli and is ref ko sirf template(hmtl) mai hi use kr skte ho ts code mai ni
-
-<button
-        class="btn btn-primary"
-        (click)="onAddServer(serverNameInput)">Add Server</button>
-
- ab ts code mai html ke throw fxn mai pass kr skte event mai … direclty nhi kr skte the
-
-
-onAddServer(serverNameInput: HTMLInputElement) { // type dekhle ab param ki tarah aya toh use krlo direct way nhi h
-
-    this.serverCreated.emit({serverName: serverNameInput.value, serverContent: this.newServerContent})
-    console.log(serverNameInput);
-
-  }
-
-
-.12
-
-
-Local ref mai kya ho rha tha ki ref li and method call hua toh pass hua ts mai lekin hume phele hi access chaiye toh ky kare
-
-  <input type="text" class="form-control" #serverContentInput>
-
-@ViewChild('serverContentInput', {static: true}) serverContentInput: ElementRef; // view child decorator use kara with selector of the element ref jo di h and clg krke dekha konsa type h ElementRef h.
-
-
-onAddServer(serverNameInput: HTMLInputElement) {
-
-    this.serverCreated.emit({serverName: serverNameInput.value, serverContent: this.serverContentInput.nativeElement.value})
-//this.serverContentInput.nativeElement mtlb ki us element ko access kara and .value lagadi uspeh.
-    console.log(serverNameInput);
-
-  }
-
-
-Isse dom ki access mil gai h but dom ke sath idhr sehh mt khelo and kuch property dom ki change na karo 
-
-.value = 2; aise mt karo kuch bad way … angular ke pass better way h vohi use krna vo age aiga.
-
-
-.13
-
-Ng-content
-
-<app-server-element *ngFor="let serverElement of serverElements" [srvElement]="serverElement">
-         <p>
-            <strong *ngIf="serverElement.type === 'server'" style="color: red">{{ serverElement.content }}</strong>
-            <em *ngIf="serverElement.type === 'blueprint'">{{ serverElement.content }}</em>
-          </p>
-</app-server-element>
-
-<div class="panel-body">
-          <ng-content></ng-content> // use this agr lena h toh parent sehh code html ka
-Ng content ki jagah code ajaiga parent she.
-</div>
-
-Projected into your child component.
-
-
-.14
-
-Slides
-
-
-.15
-
-Angular support couple of life cylce hooks.
-
-Life cycle hooks sab interface h tabhi implements ho rhe.
-
-And bina implements kare bhi chl jaiga but karlo implments.
-
-Agr refernce change nhi hui mtlb vo change nhi hua h toh mtlb ki ng on changes nhi chalega.
-
-ngDocheck do baar call hota kyuki we are in dev mode here angular have extra change detection cycle.
-
-Yeh sab order mai hi likha h
-
-import { Component, OnInit, Input, OnChanges, SimpleChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy } from '@angular/core';
-@Component({
-  selector: 'app-server-element',
-  templateUrl: './server-element.component.html',
-  styleUrls: ['./server-element.component.css']
-})
-
-export class ServerElementComponent implements OnInit, OnChanges, DoCheck, AfterContentInit, AfterContentChecked, AfterViewInit, AfterViewChecked, OnDestroy  {
-
-  @Input('srvElement') element: {type: string, name: string, content: string};
+export class BetterHighlightDirective implements OnInit{
+  @HostBinding('style.backgroundColor') backgroundColor: string = 'transparent'; 
   
-  constructor() {
-    console.log('constructor called');
-   }
-
-   ngOnChanges(changes: SimpleChanges): void {
-    console.log('ngOnChanged called', changes); 
-   }
-
-  ngOnInit(): void {
-    console.log('ngOnInit called');
+  constructor(private elRef: ElementRef, private renderer: Renderer2) { }
+  
+  ngOnInit() {
+    // this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'blue');
   }
 
-  ngDoCheck(): void {
-    console.log('ngDoCheck called'); 
+  @HostListener('mouseenter') mouseover(eventData: Event) {
+    // this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'blue');
+    this.backgroundColor = 'blue';
   }
 
-  ngAfterContentInit(): void {
-      console.log('ngAfterContentInit called');
-  }
-
-  ngAfterContentChecked(): void {
-      console.log('ngAfterContentChecked called');
-  }
-
-  ngAfterViewInit(): void {
-      console.log('ngAfterViewInit called');
-  }
-
-  ngAfterViewChecked(): void {
-      console.log('ngAfterViewChecked called');
-  }
-
-  ngOnDestroy(): void {
-      console.log('ngOnDestroy called');
+  @HostListener('mouseleave') mouseleave(eventData: Event) {
+    // this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'green');
+    this.backgroundColor = 'green';
   }
 }
 
 
-.16
+.8
 
-Sab kuch angular core sehh hi ho rha h import 
+Ab dynamic colors bhi use krne, hostbinding ke toh kya karenge?
 
-ngAfterViewInit mtlb template render hone ke baad hi humare pass dom ki access h tabhi kuch access kr paiga.
-
-
-Viewchild ki acess afterviewinit baad hi h
+<p appBetterHighlight [defaultColor]="'yellow'" [highlightColor]="'red'">Style me with my directive</p>
 
 
-@ViewChild('elementDiv') ele: ElementRef;
-
- <div class="panel-body" #elementDiv>
-
- ngAfterViewInit(): void { // is hook sehh hi accessible h
-      console.log('ngAfterViewInit called');
-      console.log(para);
+@Input() defaultColor: string = 'transparent'; // input use krlo na simple dynamic kelia
+  @Input() highlightColor: string = 'blue';
+  @HostBinding('style.backgroundColor') backgroundColor: string = 'transparent'; 
+  
+  constructor(private elRef: ElementRef, private renderer: Renderer2) { }
+  
+  ngOnInit() {
+    // this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'blue');
+  }
+  @HostListener('mouseenter') mouseover(eventData: Event) {
+    // this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'blue');
+    this.backgroundColor = 'blue';
+    this.backgroundColor = this.defaultColor;// yeh krdo aise
+  }
+  @HostListener('mouseleave') mouseleave(eventData: Event) {
+    // this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'green');
+    this.backgroundColor = 'green';
+    this.backgroundColor = this.highlightColor;
   }
 
 
 
-.17
+Ab host binding mai nhi chl rha tha iniliay kyu ki abhi property set nhi hui thi bahar default wali toh abhi jab sath set hoaji before rendering and after properties are available tab sahi chalega ngOnInit
 
- <p #contentPara>- // paraent mai ref deke child ke lifecyle hooks mai access kiya
-            <strong *ngIf="serverElement.type === 'server'" style="color: red">{{ serverElement.content }}</strong>
-            <em *ngIf="serverElement.type === 'blueprint'">{{ serverElement.content }}</em>
-          </p>
-
- <ng-content></ng-content> child mai
-
- @ContentChild('contentPara') para: ElementRef; // Content child similar as view child
-
-It will run after 
-
-ngAfterContentInit(): void {
-      console.log('ngAfterContentInit called');
-      console.log(ele);
+ngOnInit() {
+    // this.renderer.setStyle(this.elRef.nativeElement, 'background-color', 'blue');
+    this.backgroundColor = this.defaultColor;
   }
 
-Is hook sehh chalega.
 
+Using directive name as property jaise ngClass mai hua hua.
+
+Input('BetterHighlightDirective') highlightColor: string = 'blue'; // same name ka alias ho skta directive ke
+
+Then use directive in [] brackets and give property []="''" and quotes mtlb string nhi quotes ke ander ke quotes mtlb string hote h.
+
+Or agr string pass kr rhe property binding mai toh can use it without [] brackets and name = "" direct bajai 
+[name] = "''"
+
+
+
+.9
+
+Structual directive
+
+Property binding hoti h, event binding hoti h, two way binding hoti h, string interpolation hoti h.
+
+*
+
+<ng-template [ngIf]="onlyOdd"> // jab kuch optionallly render krna ho toh use ng-template and uspeh we can use ngif yeh sab attribute ki tarah and normal jagah peh we use it as structral directive ki tarah *.
+        <p>Only odd</p>
+</ng-template>
+
+Behind the scene aise work krta h
+
+
+.10
+
+Constructor mai public private daaldiya kr nhi toh automatically this. Yeh sab nhi hota
+
+Star automatically converts to ng-template syntax peh
+
+
+<ng-template [appUnless]="onlyOdd">
+        <p>Only odd</p>
+</ng-template>
+
+<p *appUnless="onlyOdd">Only odd</p>
+
+
+import { Directive, Input, TemplateRef, ViewContainerRef } from '@angular/core';
+
+@Directive({
+  selector: '[appUnless]'
+})
+export class UnlessDirective {
+
+  @Input() set appUnless(condition: boolean) { // set method bnadiya and same name hona chaiye jo selector ka h
+   
+ if(!condition) {
+      this.vcRef.createEmbeddedView(this.templateRef);
+    } else {
+      this.vcRef.clear;
+    }
+
+  }
+
+// templateRef(What) gives access of Template same as elementRef gives acess to element, viewContainerRef(Where) tells where should we render out directive.
+  constructor(private templateRef: TemplateRef<any>, private vcRef: ViewContainerRef) { }
+  
+}
+
+
+.11
+
+Ng switch
+
+Switch statement hi h
+
+<div [ngSwitch]="value">
+        <p *ngSwitchCase="5">value is 5</p>
+        <p *ngSwitchCase="10">value is 10</p>
+        <p *ngSwitchDefault>value is default</p>
+</div>
